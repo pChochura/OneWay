@@ -16,8 +16,8 @@ public class Levels {
                 break;
             case 2:
                 map[3][1] = 1; //Dark hole
-                map[4][2] = 2; //Triangle
-                map[5][2] = 2;
+                map[5][2] = 2; //Triangle
+                map[4][4] = 2;
                 map[2][2] = 3; //Empty triangle
                 map[3][2] = 4; //Dotted triangle
                 moves = 2;

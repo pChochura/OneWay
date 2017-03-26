@@ -47,11 +47,11 @@ public class MainActivity extends Activity {
     }
 
     private void setupBackgroundAnimation() {
-        ObjectAnimator translationY_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageBackground), "translationY", findViewById(R.id.imageBackground).getTranslationY(), new Random().nextInt(125) - 25);
-        ObjectAnimator translationX_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageBackground), "translationX", findViewById(R.id.imageBackground).getTranslationX(), new Random().nextInt(100) - 50);
+        ObjectAnimator translationY_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageBackground), "translationY", findViewById(R.id.imageBackground).getTranslationY(), new Random().nextInt(200) - 100);
+        ObjectAnimator translationX_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageBackground), "translationX", findViewById(R.id.imageBackground).getTranslationX(), new Random().nextInt(150) - 75);
         AnimatorSet set = new AnimatorSet();
         set.playTogether(translationX_1, translationY_1);
-        set.setDuration(duration * 40);
+        set.setDuration(duration * 10);
         set.start();
         set.addListener(new Animator.AnimatorListener() {
             @Override public void onAnimationStart(Animator animator) {}

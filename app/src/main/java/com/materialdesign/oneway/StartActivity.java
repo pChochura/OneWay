@@ -4,9 +4,12 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -25,6 +28,7 @@ public class StartActivity extends Activity {
     int moves = 0;
     Pos[][] boardPoses = new Pos[WIDTH][HEIGHT];
     ImageView[][] mapImageView = new ImageView[WIDTH][HEIGHT];
+    ImageView[][] tilesImageView = new ImageView[WIDTH][HEIGHT];
     LevelObject currentLevel;
     Point firstObject;
     ExplosionField explosionField;
@@ -58,9 +62,12 @@ public class StartActivity extends Activity {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             tile.setZ(-1);
                         }
-                        tile.setImageResource(R.mipmap.tile);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            tile.setBackground(getDrawable(R.drawable.tile));
+                        }
                         tile.setLayoutParams(layoutParams);
                         ((RelativeLayout) findViewById(R.id.Board)).addView(tile);
+                        tilesImageView[finalI][finalJ] = tile;
                     }
                 });
             }
@@ -105,11 +112,11 @@ public class StartActivity extends Activity {
     }
 
     private void setupBackgroundAnimation() {
-        ObjectAnimator translationY_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageBackground), "translationY", findViewById(R.id.imageBackground).getTranslationY(), new Random().nextInt(125) - 25);
-        ObjectAnimator translationX_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageBackground), "translationX", findViewById(R.id.imageBackground).getTranslationX(), new Random().nextInt(100) - 50);
+        ObjectAnimator translationY_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageBackground), "translationY", findViewById(R.id.imageBackground).getTranslationY(), new Random().nextInt(200) - 100);
+        ObjectAnimator translationX_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageBackground), "translationX", findViewById(R.id.imageBackground).getTranslationX(), new Random().nextInt(150) - 75);
         AnimatorSet set = new AnimatorSet();
         set.playTogether(translationX_1, translationY_1);
-        set.setDuration(duration * 40);
+        set.setDuration(duration * 30);
         set.start();
         set.addListener(new Animator.AnimatorListener() {
             @Override public void onAnimationStart(Animator animator) {}
@@ -126,12 +133,12 @@ public class StartActivity extends Activity {
             if(view.equals(mapImageView[i][j]) && currentLevel.getMap()[i][j] != 0) clickAtPos(i, j);
     }
 
-    private void clickAtPos(int x, int y) {
+    private void clickAtPos(final int x, final int y) {
         if(!animationRunning) {
             moves++;
-            ObjectAnimator background = ObjectAnimator.ofObject(mapImageView[x][y], "backgroundColor", new ArgbEvaluator(), mapImageView[x][y].getSolidColor(), Color.parseColor("#6459214c"));
-            background.setDuration(duration);
-            background.start();
+            LayerDrawable bgDrawable = (LayerDrawable) tilesImageView[x][y].getBackground();
+            GradientDrawable shape = (GradientDrawable) bgDrawable.findDrawableByLayerId(R.id.card);
+            AnimateColorShape(shape, Color.parseColor("#ffffff"), Color.parseColor("#6459214c"));
             if(!clicked && currentLevel.getMap()[x][y] != 1) {
                 firstObject = new Point(x, y);
                 clicked = true;
@@ -139,57 +146,93 @@ public class StartActivity extends Activity {
                 int typeFirst = currentLevel.getMap()[firstObject.x][firstObject.y];
                 int typeSecond = currentLevel.getMap()[x][y];
                 if((typeFirst == 2 && (typeSecond == 3 || typeSecond == 4)) || (typeSecond == 2 && (typeFirst == 3 || typeFirst == 4))) {
-                    if (x == firstObject.x && Math.abs(y - firstObject.y) % 2 == 0) {
+                    if (x == firstObject.x && Math.abs(y - firstObject.y) %2 == 0) {
                         Point midPoint = new Point(x, (y + firstObject.y) / 2);
                         rotateTriangles(firstObject, new Point(x, y));
                         collapseTriangles(firstObject, new Point(x, y), midPoint);
-                    } else if (y == firstObject.y && Math.abs(x - firstObject.x) % 2 == 0) {
+                    } else if (y == firstObject.y && Math.abs(x - firstObject.x) %2 == 0) {
                         Point midPoint = new Point((x + firstObject.x) / 2, y);
                         rotateTriangles(firstObject, new Point(x, y));
                         collapseTriangles(firstObject, new Point(x, y), midPoint);
+                    } else if(Math.abs(firstObject.x - x) == Math.abs(firstObject.y - y) && Math.abs(firstObject.y - y) %2 == 0) {
+                        Point midPoint = new Point((x + firstObject.x) / 2, (y + firstObject.y) / 2);
+                        rotateTriangles(firstObject, new Point(x, y));
+                        collapseTriangles(firstObject, new Point(x, y), midPoint);
                     }
-                } else {
-                    ObjectAnimator background_1 = ObjectAnimator.ofObject(mapImageView[firstObject.x][firstObject.y], "backgroundColor", new ArgbEvaluator(), mapImageView[x][y].getSolidColor(), Color.parseColor("#0059214c"));
-                    ObjectAnimator background_2 = ObjectAnimator.ofObject(mapImageView[x][y], "backgroundColor", new ArgbEvaluator(), mapImageView[x][y].getSolidColor(), Color.parseColor("#0059214c"));
-                    AnimatorSet set = new AnimatorSet();
-                    set.playTogether(background_1, background_2);
-                    set.setDuration(duration);
-                    set.start();
                 }
+                GradientDrawable shape_1 = (GradientDrawable)((LayerDrawable) tilesImageView[firstObject.x][firstObject.y].getBackground()).findDrawableByLayerId(R.id.card);
+                GradientDrawable shape_2 = (GradientDrawable)((LayerDrawable) tilesImageView[x][y].getBackground()).findDrawableByLayerId(R.id.card);
+                AnimateColorShape(shape_1, Color.parseColor("#6459214c"), Color.parseColor("#ffffff"));
+                AnimateColorShape(shape_2, Color.parseColor("#6459214c"), Color.parseColor("#ffffff"));
                 clicked = false;
             }
         }
     }
 
+    private void AnimateColorShape(final GradientDrawable shape, int colorFrom, int colorTo) {
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+        colorAnimation.setDuration(duration);
+        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override public void onAnimationUpdate(ValueAnimator animator) {
+                shape.setColor((int) animator.getAnimatedValue());
+            }
+        });
+        colorAnimation.start();
+    }
+
     private void collapseTriangles(final Point first, final Point second, final Point midPoint) {
-        ObjectAnimator xy_1, xy_2;
+        ObjectAnimator x_1, x_2, y_1, y_2;
         if(first.x == second.x) {
-            xy_1 = ObjectAnimator.ofFloat(mapImageView[first.x][first.y], "y", mapImageView[first.x][first.y].getY(), mapImageView[midPoint.x][midPoint.y].getY());
-            xy_2 = ObjectAnimator.ofFloat(mapImageView[second.x][second.y], "y", mapImageView[second.x][second.y].getY(), mapImageView[midPoint.x][midPoint.y].getY());
+            x_1 = ObjectAnimator.ofFloat(mapImageView[first.x][first.y], "x", mapImageView[first.x][first.y].getX(), mapImageView[first.x][first.y].getX()); //empty
+            y_1 = ObjectAnimator.ofFloat(mapImageView[first.x][first.y], "y", mapImageView[first.x][first.y].getY(), mapImageView[midPoint.x][midPoint.y].getY());
+            x_2 = ObjectAnimator.ofFloat(mapImageView[second.x][second.y], "x", mapImageView[second.x][second.y].getX(), mapImageView[second.x][second.y].getX()); //empty
+            y_2 = ObjectAnimator.ofFloat(mapImageView[second.x][second.y], "y", mapImageView[second.x][second.y].getY(), mapImageView[midPoint.x][midPoint.y].getY());
+        } else if(first.y == second.y) {
+            x_1 = ObjectAnimator.ofFloat(mapImageView[first.x][first.y], "x", mapImageView[first.x][first.y].getX(), mapImageView[midPoint.x][midPoint.y].getX());
+            y_1 = ObjectAnimator.ofFloat(mapImageView[first.x][first.y], "y", mapImageView[first.x][first.y].getY(), mapImageView[first.x][first.y].getY()); //empty
+            x_2 = ObjectAnimator.ofFloat(mapImageView[second.x][second.y], "x", mapImageView[second.x][second.y].getX(), mapImageView[midPoint.x][midPoint.y].getX());
+            y_2 = ObjectAnimator.ofFloat(mapImageView[second.x][second.y], "y", mapImageView[second.x][second.y].getY(), mapImageView[second.x][second.y].getY()); //empty
         } else {
-            xy_1 = ObjectAnimator.ofFloat(mapImageView[first.x][first.y], "x", mapImageView[first.x][first.y].getX(), mapImageView[midPoint.x][midPoint.y].getX());
-            xy_2 = ObjectAnimator.ofFloat(mapImageView[second.x][second.y], "x", mapImageView[second.x][second.y].getX(), mapImageView[midPoint.x][midPoint.y].getX());
+            x_1 = ObjectAnimator.ofFloat(mapImageView[first.x][first.y], "x", mapImageView[first.x][first.y].getX(), mapImageView[midPoint.x][midPoint.y].getX());
+            y_1 = ObjectAnimator.ofFloat(mapImageView[first.x][first.y], "y", mapImageView[first.x][first.y].getY(), mapImageView[midPoint.x][midPoint.y].getY());
+            x_2 = ObjectAnimator.ofFloat(mapImageView[second.x][second.y], "x", mapImageView[second.x][second.y].getX(), mapImageView[midPoint.x][midPoint.y].getX());
+            y_2 = ObjectAnimator.ofFloat(mapImageView[second.x][second.y], "y", mapImageView[second.x][second.y].getY(), mapImageView[midPoint.x][midPoint.y].getY());
         }
         ObjectAnimator rotate_1 = ObjectAnimator.ofFloat(mapImageView[first.x][first.y], "rotation", mapImageView[first.x][first.y].getRotation(), getAngle(midPoint.x, midPoint.y));
         ObjectAnimator rotate_2 = ObjectAnimator.ofFloat(mapImageView[second.x][second.y], "rotation", mapImageView[second.x][second.y].getRotation(), getAngle(midPoint.x, midPoint.y));
         ObjectAnimator rotate_3 = ObjectAnimator.ofFloat(mapImageView[midPoint.x][midPoint.y], "rotation", mapImageView[midPoint.x][midPoint.y].getRotation(), getAngle(midPoint.x, midPoint.y));
         AnimatorSet set = new AnimatorSet();
-        set.playTogether(xy_1, xy_2, rotate_1, rotate_2, rotate_3);
+        set.playTogether(x_1, x_2, y_1, y_2, rotate_1, rotate_2, rotate_3);
         set.setDuration(duration);
         set.setInterpolator(new AccelerateInterpolator(2f));
         set.start();
         set.addListener(new Animator.AnimatorListener() {
             @Override public void onAnimationStart(Animator animator) {}
             @Override public void onAnimationEnd(Animator animator) {
-                if(currentLevel.getMap()[first.x][first.y] != 4 && currentLevel.getMap()[second.x][second.y] != 4 && currentLevel.getMap()[midPoint.x][midPoint.y] == 0) {
+                if((currentLevel.getMap()[first.x][first.y] == 4 || currentLevel.getMap()[second.x][second.y] == 4) && currentLevel.getMap()[midPoint.x][midPoint.y] == 0) {
                     currentLevel.getMap()[midPoint.x][midPoint.y] = 2;
+                    setBoardByPos(midPoint.x, midPoint.y);
+                    ObjectAnimator alpha = ObjectAnimator.ofFloat(mapImageView[midPoint.x][midPoint.y], "alpha", 1, 0);
+                    alpha.setDuration(duration);
+                    alpha.start();
+                    alpha.addListener(new Animator.AnimatorListener() {
+                        @Override public void onAnimationStart(Animator animator) {}
+                        @Override public void onAnimationEnd(Animator animator) {
+                            currentLevel.getMap()[midPoint.x][midPoint.y] = 0;
+                            setBoardByPos(midPoint.x, midPoint.y);
+                        }
+                        @Override public void onAnimationCancel(Animator animator) {}
+                        @Override public void onAnimationRepeat(Animator animator) {}
+                    });
+                } else {
+                    currentLevel.getMap()[midPoint.x][midPoint.y] = 2;
+                    setBoardByPos(midPoint.x, midPoint.y);
                 }
                 currentLevel.getMap()[first.x][first.y] = 0;
                 currentLevel.getMap()[second.x][second.y] = 0;
-                setBoardByPos(midPoint.x, midPoint.y);
                 setBoardByPos(first.x, first.y);
                 setBoardByPos(second.x, second.y);
-                makeFireworks(midPoint);
+//                makeFireworks(midPoint);
                 if(lastTriangle())
                     collapseDarkHole();
             }

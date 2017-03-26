@@ -33,7 +33,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -45,7 +46,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -57,7 +59,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -69,7 +72,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -81,7 +85,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -93,7 +98,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -105,7 +111,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -117,7 +124,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -130,7 +138,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -143,7 +152,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -157,7 +167,7 @@
             android:onClick="clickMap"
             android:scaleX="0.75"
             android:scaleY="0.75"
-            android:src="@mipmap/dark_hole"/>
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -170,7 +180,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -183,7 +194,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -196,7 +208,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -208,7 +221,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -221,7 +235,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -235,7 +250,7 @@
             android:onClick="clickMap"
             android:scaleX="0.75"
             android:scaleY="0.75"
-            android:src="@mipmap/triangle_empty"/>
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -249,7 +264,7 @@
             android:onClick="clickMap"
             android:scaleX="0.75"
             android:scaleY="0.75"
-            android:src="@mipmap/triangle_dot"/>
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -263,7 +278,7 @@
             android:onClick="clickMap"
             android:scaleX="0.75"
             android:scaleY="0.75"
-            android:src="@mipmap/triangle"/>
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -277,7 +292,7 @@
             android:onClick="clickMap"
             android:scaleX="0.75"
             android:scaleY="0.75"
-            android:src="@mipmap/triangle"/>
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -290,7 +305,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -302,7 +318,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -315,7 +332,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -328,7 +346,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -341,7 +360,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -354,7 +374,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -367,7 +388,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -380,7 +402,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -392,7 +415,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -405,7 +429,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -418,7 +443,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -431,7 +457,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -444,7 +471,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -457,7 +485,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -470,7 +499,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -482,7 +512,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -495,7 +526,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -508,7 +540,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -521,7 +554,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -534,7 +568,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -547,7 +582,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -560,7 +596,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -572,7 +609,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -585,7 +623,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -598,7 +637,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -611,7 +651,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -624,7 +665,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -637,7 +679,8 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
 
         <ImageView
             android:layout_width="40dp"
@@ -650,7 +693,9 @@
             android:clickable="true"
             android:onClick="clickMap"
             android:scaleX="0.75"
-            android:scaleY="0.75"/>
+            android:scaleY="0.75"
+            />
+
     </RelativeLayout>
 
     <TextView
@@ -665,5 +710,76 @@
         android:visibility="gone"
         android:scaleX="1.5"
         android:scaleY="1.5"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:layout_centerHorizontal="true"
+        android:padding="10dp"
+        android:id="@+id/InformationContainer"
+        android:layout_above="@+id/BottomBar">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/moves"
+            android:id="@+id/textMoves"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            android:padding="10dp"
+            android:layout_toLeftOf="@+id/imageDivider"/>
+
+        <ImageView
+            android:layout_width="2dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageDivider"
+            android:layout_alignTop="@+id/textLevel"
+            android:layout_alignBottom="@+id/textLevel"
+            android:background="@color/colorPrimary"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/level"
+            android:id="@+id/textLevel"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            android:padding="10dp"
+            android:layout_toRightOf="@+id/imageDivider"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/BottomBar"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/imageBack"
+            android:src="@mipmap/ic_arrow_back"/>
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/imageHint"
+            android:layout_toRightOf="@+id/imageBack"
+            android:src="@mipmap/ic_lightbulb_outline"/>
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/imageRestart"
+            android:layout_toRightOf="@+id/imageHint"
+            android:src="@mipmap/ic_refresh"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>
