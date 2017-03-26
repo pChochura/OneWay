@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.materialdesign.oneway.MainActivity"
+    android:background="#ffffff">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/imageBackground"
+        android:src="@mipmap/background"
+        android:scaleType="centerCrop"
+        android:alpha="0.2"
+        android:scaleX="1.2"
+        android:scaleY="1.2"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imagelogo"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:src="@mipmap/logo"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="166dp"
+        android:rotation="0"
+        android:id="@+id/StartContainer">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/imageDarkHole"
+            android:src="@mipmap/dark_hole"
+            android:layout_toRightOf="@+id/imageTriangle1"
+            android:onClick="clickStart"
+            android:clickable="true"
+            />
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/imageTriangle1"
+            android:src="@mipmap/triangle"
+            android:layout_centerVertical="true"
+            android:rotation="90"
+            android:layout_marginRight="50dp"/>
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/imageTriangle2"
+            android:src="@mipmap/triangle_empty"
+            android:layout_centerVertical="true"
+            android:rotation="-90"
+            android:layout_toRightOf="@+id/imageDarkHole"
+            android:layout_marginLeft="50dp"/>
+    </RelativeLayout>
+
+</RelativeLayout>
