@@ -55,6 +55,6 @@ public class Levels {
                 difficulty = 2;
                 break;
         }
-        return new LevelObject(moves, difficulty, map);
+        return new LevelObject(level, moves, difficulty, map);
     }
 }

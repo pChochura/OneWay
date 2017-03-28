@@ -1,12 +1,17 @@
 package com.materialdesign.oneway;
 
 public class LevelObject {
-    private int moves, difficulty;
+    private int index, moves, difficulty;
     private int[][] map;
 
-    LevelObject() {}
+    LevelObject(int index, int moves, int difficulty) {
+        this.index = index;
+        this.moves = moves;
+        this.difficulty = difficulty;
+    }
 
-    LevelObject(int moves, int difficulty, int[][] map) {
+    LevelObject(int index, int moves, int difficulty, int[][] map) {
+        this.index = index;
         this.moves = moves;
         this.difficulty = difficulty;
         this.map = map;
@@ -34,5 +39,13 @@ public class LevelObject {
 
     public void setMap(int[][] map) {
         this.map = map;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 }

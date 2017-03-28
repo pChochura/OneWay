@@ -185,7 +185,7 @@ public class StartActivity extends Activity {
     }
 
     private void showAllLevels() {
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        startActivity(new Intent(getApplicationContext(), LevelsActivity.class));
         finish();
     }
 
