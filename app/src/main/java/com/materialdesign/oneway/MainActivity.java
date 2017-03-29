@@ -13,7 +13,7 @@ import android.view.animation.AccelerateInterpolator;
 import java.util.Random;
 
 public class MainActivity extends Activity {
-    final int duration = 1500;
+    final int duration = 1000;
     static int currentLevel = 1;
     public static String PACKAGE_NAME;
 
@@ -51,7 +51,7 @@ public class MainActivity extends Activity {
         ObjectAnimator translationX_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageBackground), "translationX", findViewById(R.id.imageBackground).getTranslationX(), new Random().nextInt(150) - 75);
         AnimatorSet set = new AnimatorSet();
         set.playTogether(translationX_1, translationY_1);
-        set.setDuration(duration * 10);
+        set.setDuration(duration * 20);
         set.start();
         set.addListener(new Animator.AnimatorListener() {
             @Override public void onAnimationStart(Animator animator) {}

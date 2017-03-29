@@ -48,7 +48,7 @@ public class LevelItemAdapter extends RecyclerView.Adapter<LevelItemAdapter.Data
 
     @Override
     public void onBindViewHolder(final DataObjectHolder holder, int position) {
-        holder.textIndex.setText("" + (position + 1));
+        holder.textIndex.setText("" + mDataSet.get(position).getIndex());
     }
 
     @Override
