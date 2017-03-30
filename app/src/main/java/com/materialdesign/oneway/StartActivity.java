@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
@@ -26,16 +27,18 @@ import java.util.Random;
 public class StartActivity extends Activity {
     static final int WIDTH = 7, HEIGHT = 7, duration = 1000;
     static float backgroundTranslationX = 0, backgroundTranslationY = 0;
-    boolean animationRunning = false, clicked = false;
-    int tileSize = 50, moves = 0;
+    boolean animationRunning = false, clicked = false, hintAvailable = true;
+    int tileSize = 50, moves = 0, hint = 0;
     ImageView[][] mapImageView = new ImageView[WIDTH][HEIGHT];
     ImageView[][] tilesImageView = new ImageView[WIDTH][HEIGHT];
     static LevelObject currentLevel;
     static Point firstObject, size;
+    AnimatorSet hintAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_start);
 
         size = new Point();
@@ -119,7 +122,9 @@ public class StartActivity extends Activity {
     }
 
     private void getLevel() {
-        moves = 0;
+        if(hintAnimation != null) hintAnimation.cancel();
+        hintAvailable = true;
+        hint = moves = 0;
         currentLevel = Levels.getLevel(MainActivity.currentLevel);
         setMoves();
         setLevel();
@@ -249,6 +254,7 @@ public class StartActivity extends Activity {
             GradientDrawable shape = (GradientDrawable) ((LayerDrawable) tilesImageView[x][y].getBackground()).findDrawableByLayerId(R.id.card);
             animateColorShape(shape, getResources().getColor(R.color.colorAccentBright), getResources().getColor(R.color.colorAccent));
             if(!clicked && currentLevel.getMap()[x][y] != 1) {
+                checkHint(new Point(x, y));
                 firstObject = new Point(x, y);
                 clicked = true;
             } else {
@@ -266,19 +272,55 @@ public class StartActivity extends Activity {
                         midPoint = new Point((x + firstObject.x) / 2, (y + firstObject.y) / 2);
 
                     if(midPoint != null && currentLevel.getMap()[midPoint.x][midPoint.y] == 0) {
+                        checkHint(new Point(x, y));
                         rotateTriangles(firstObject, new Point(x, y));
                         collapseTriangles(firstObject, new Point(x, y), midPoint);
-                    } else showHint(R.string.hint);
+                    } else {
+                        showHint(R.string.hint);
+                        hint--;
+                    }
+
                 } else if(typeSecond == 5 && (x == firstObject.x || y == firstObject.y || Math.abs(firstObject.x - x) == Math.abs(firstObject.y - y))) {
+                    checkHint(new Point(x, y));
                     rotateTriangle(firstObject, new Point(x, y));
                     collapseBrightHole(firstObject, new Point(x, y));
-                } else if(!firstObject.equals(new Point(x, y)))
+                } else if(!firstObject.equals(new Point(x, y))) {
                     showHint(R.string.hint);
+                    hint--;
+                }
                 unMarkTile(firstObject.x, firstObject.y);
                 unMarkTile(x, y);
                 clicked = false;
             }
         }
+    }
+
+    public void clickHint(View view) {
+        if(findViewById(R.id.imageHint).getAlpha() == 1 && hint < Hints.getHint(MainActivity.currentLevel).size()) {
+            ImageView imageView = mapImageView[Hints.getHint(MainActivity.currentLevel).get(hint).x][Hints.getHint(MainActivity.currentLevel).get(hint).y];
+            float previousScale = imageView.getScaleX();
+            ObjectAnimator scaleX = ObjectAnimator.ofFloat(imageView, "scaleX", previousScale, 1, previousScale);
+            scaleX.setRepeatCount(ValueAnimator.INFINITE);
+            scaleX.setRepeatMode(ValueAnimator.REVERSE);
+            ObjectAnimator scaleY = ObjectAnimator.ofFloat(imageView, "scaleY", previousScale, 1, previousScale);
+            scaleY.setRepeatCount(ValueAnimator.INFINITE);
+            scaleY.setRepeatMode(ValueAnimator.REVERSE);
+            hintAnimation = new AnimatorSet();
+            hintAnimation.playTogether(scaleX, scaleY);
+            hintAnimation.setDuration(duration * 2);
+            hintAnimation.start();
+        }
+    }
+
+    private void checkHint(Point point) {
+        hintAvailable = Hints.getHint(MainActivity.currentLevel).get(hint).equals(point) ||
+                (Hints.getHint(MainActivity.currentLevel).size() > hint + 1 && Hints.getHint(MainActivity.currentLevel).get(hint + 1).equals(point)) ||
+                (hint > 0 && Hints.getHint(MainActivity.currentLevel).get(hint - 1).equals(point));
+        ObjectAnimator alpha = ObjectAnimator.ofFloat(findViewById(R.id.imageHint), "alpha", findViewById(R.id.imageHint).getAlpha(), hintAvailable ? 1f : 0.3f);
+        alpha.setDuration(duration);
+        alpha.start();
+        hint++;
+        if(hintAnimation != null) hintAnimation.cancel();
     }
 
     private void showHint(int hint) {
@@ -409,12 +451,12 @@ public class StartActivity extends Activity {
                                 @Override public void onAnimationEnd(Animator animator) {
                                     if(!LevelsActivity.endedLevels.contains(MainActivity.currentLevel))
                                         LevelsActivity.endedLevels.add(MainActivity.currentLevel);
-                                    if(MainActivity.currentLevel == LevelsActivity.sections[LevelsActivity.getSection(MainActivity.currentLevel)] - 1 && LevelsActivity.endedSection(MainActivity.currentLevel) != -1 ||
-                                            MainActivity.currentLevel != LevelsActivity.sections[LevelsActivity.getSection(MainActivity.currentLevel)] - 1)
+                                    if(MainActivity.currentLevel == LevelsActivity.sections[LevelsActivity.getSection(MainActivity.currentLevel - 1)] && LevelsActivity.endedSection(MainActivity.currentLevel) != -1 ||
+                                            MainActivity.currentLevel != LevelsActivity.sections[LevelsActivity.getSection(MainActivity.currentLevel - 1)])
                                         MainActivity.currentLevel++;
+                                    else clickBack(null);
                                     if(LevelsActivity.endedSection(MainActivity.currentLevel) != -1)
                                         LevelsActivity.endedSections.add(LevelsActivity.endedSection(MainActivity.currentLevel));
-                                    else clickBack(null);
                                     getLevel();
                                     setBoard();
                                     showBoard();
@@ -654,6 +696,6 @@ public class StartActivity extends Activity {
     @Override
     public void onBackPressed() {
         if(findViewById(R.id.HintBox).getVisibility() == View.VISIBLE) super.onBackPressed();
-        else clickBack(null);
+        else showHint(R.string.sure);
     }
 }

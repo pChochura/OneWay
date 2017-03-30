@@ -734,7 +734,10 @@
             android:layout_height="50dp"
             android:id="@+id/imageHint"
             android:layout_toRightOf="@+id/imageBack"
-            android:src="@mipmap/ic_lightbulb_outline"/>
+            android:src="@mipmap/ic_lightbulb_outline"
+            android:adjustViewBounds="false"
+            android:clickable="true"
+            android:onClick="clickHint"/>
 
         <ImageView
             android:layout_width="50dp"
