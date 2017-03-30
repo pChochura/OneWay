@@ -6,4 +6,5 @@
     <string name="level">Level</string>
     <string name="moves">Moves</string>
     <string name="hint">It\'s illegal move</string>
+    <string name="not_ready">You\'re not ready!</string>
 </resources>

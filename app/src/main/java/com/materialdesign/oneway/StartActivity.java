@@ -7,14 +7,11 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
@@ -28,12 +25,12 @@ import java.util.Random;
 
 public class StartActivity extends Activity {
     static final int WIDTH = 7, HEIGHT = 7, duration = 1000;
-    static float backgroundTranslationX, backgroundTranslationY;
+    static float backgroundTranslationX = 0, backgroundTranslationY = 0;
     boolean animationRunning = false, clicked = false;
-    int moves = 0;
+    int tileSize = 50, moves = 0;
     ImageView[][] mapImageView = new ImageView[WIDTH][HEIGHT];
     ImageView[][] tilesImageView = new ImageView[WIDTH][HEIGHT];
-    LevelObject currentLevel;
+    static LevelObject currentLevel;
     static Point firstObject, size;
 
     @Override
@@ -44,10 +41,38 @@ public class StartActivity extends Activity {
         size = new Point();
         getWindowManager().getDefaultDisplay().getSize(size);
 
+        findViewById(R.id.imageBackground).setTranslationX(StartActivity.backgroundTranslationX);
+        findViewById(R.id.imageBackground).setTranslationY(StartActivity.backgroundTranslationY);
+
         getBoard();
+        setSizeOfTiles();
         getLevel();
         setBoard();
+        animateIn();
         setupBackgroundAnimation();
+    }
+
+    private void animateIn() {
+        findViewById(R.id.InformationContainer).setTranslationX(size.x);
+        ObjectAnimator x_1 = ObjectAnimator.ofFloat(findViewById(R.id.Board), "x", size.x, 0);
+        ObjectAnimator x_2 = ObjectAnimator.ofFloat(findViewById(R.id.InformationContainer), "x", size.x, 0);
+        ObjectAnimator x_3 = ObjectAnimator.ofFloat(findViewById(R.id.BottomBar), "x", size.x, 0);
+        x_2.setStartDelay(duration / 4);
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(x_1, x_2, x_3);
+        set.setDuration(duration);
+        set.setInterpolator(new AnticipateOvershootInterpolator());
+        set.start();
+    }
+
+    private void setSizeOfTiles() {
+        tileSize = (size.x - 100) / WIDTH;
+        for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++) {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mapImageView[i][j].getLayoutParams();
+            layoutParams.height = tileSize;
+            layoutParams.width = tileSize;
+            mapImageView[i][j].setLayoutParams(layoutParams);
+        }
     }
 
     private void setupBackgroundAnimation() {
@@ -274,6 +299,14 @@ public class StartActivity extends Activity {
                 translation_2.setStartDelay(duration);
                 translation_2.setInterpolator(new AnticipateOvershootInterpolator());
                 translation_2.start();
+                translation_2.addListener(new Animator.AnimatorListener() {
+                    @Override public void onAnimationStart(Animator animator) {}
+                    @Override public void onAnimationEnd(Animator animator) {
+                        findViewById(R.id.HintBox).setVisibility(View.INVISIBLE);
+                    }
+                    @Override public void onAnimationCancel(Animator animator) {}
+                    @Override public void onAnimationRepeat(Animator animator) {}
+                });
             }
             @Override public void onAnimationCancel(Animator animator) {}
             @Override public void onAnimationRepeat(Animator animator) {}
@@ -374,7 +407,14 @@ public class StartActivity extends Activity {
                             set.addListener(new Animator.AnimatorListener() {
                                 @Override public void onAnimationStart(Animator animator) {}
                                 @Override public void onAnimationEnd(Animator animator) {
-                                    MainActivity.currentLevel++;
+                                    if(!LevelsActivity.endedLevels.contains(MainActivity.currentLevel))
+                                        LevelsActivity.endedLevels.add(MainActivity.currentLevel);
+                                    if(MainActivity.currentLevel == LevelsActivity.sections[LevelsActivity.getSection(MainActivity.currentLevel)] - 1 && LevelsActivity.endedSection(MainActivity.currentLevel) != -1 ||
+                                            MainActivity.currentLevel != LevelsActivity.sections[LevelsActivity.getSection(MainActivity.currentLevel)] - 1)
+                                        MainActivity.currentLevel++;
+                                    if(LevelsActivity.endedSection(MainActivity.currentLevel) != -1)
+                                        LevelsActivity.endedSections.add(LevelsActivity.endedSection(MainActivity.currentLevel));
+                                    else clickBack(null);
                                     getLevel();
                                     setBoard();
                                     showBoard();
@@ -609,5 +649,11 @@ public class StartActivity extends Activity {
         else if(angle < -180)
             angle = angle + 360;
         return angle;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(findViewById(R.id.HintBox).getVisibility() == View.VISIBLE) super.onBackPressed();
+        else clickBack(null);
     }
 }

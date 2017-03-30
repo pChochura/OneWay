@@ -25,8 +25,8 @@
         android:gravity="center">
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map00"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
@@ -36,8 +36,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map10"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/map00"
@@ -48,8 +48,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map20"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/map10"
@@ -60,8 +60,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map30"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/map20"
@@ -72,8 +72,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map40"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/map30"
@@ -84,8 +84,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map50"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/map40"
@@ -96,8 +96,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map60"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/map50"
@@ -108,8 +108,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map01"
             android:layout_below="@+id/map00"
             android:layout_alignParentStart="true"
@@ -120,8 +120,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map11"
             android:layout_toEndOf="@+id/map01"
             android:layout_marginLeft="2dp"
@@ -133,8 +133,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map21"
             android:layout_toEndOf="@+id/map11"
             android:layout_marginLeft="2dp"
@@ -146,8 +146,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map31"
             android:layout_toEndOf="@+id/map21"
             android:layout_marginLeft="2dp"
@@ -159,8 +159,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map41"
             android:layout_toEndOf="@+id/map31"
             android:layout_marginLeft="2dp"
@@ -172,8 +172,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map51"
             android:layout_toEndOf="@+id/map41"
             android:layout_marginLeft="2dp"
@@ -185,8 +185,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map61"
             android:layout_toEndOf="@+id/map51"
             android:layout_marginLeft="2dp"
@@ -198,8 +198,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map02"
             android:layout_below="@+id/map01"
             android:layout_alignParentStart="true"
@@ -210,8 +210,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map12"
             android:layout_below="@+id/map11"
             android:layout_toEndOf="@+id/map02"
@@ -223,8 +223,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map22"
             android:layout_below="@+id/map21"
             android:layout_toEndOf="@+id/map12"
@@ -236,8 +236,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map32"
             android:layout_below="@+id/map21"
             android:layout_toEndOf="@+id/map22"
@@ -249,8 +249,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map42"
             android:layout_below="@+id/map31"
             android:layout_toEndOf="@+id/map32"
@@ -262,8 +262,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map52"
             android:layout_below="@+id/map51"
             android:layout_toEndOf="@+id/map42"
@@ -275,8 +275,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map62"
             android:layout_below="@+id/map51"
             android:layout_toEndOf="@+id/map52"
@@ -288,8 +288,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map03"
             android:layout_below="@+id/map02"
             android:layout_alignParentStart="true"
@@ -300,8 +300,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map13"
             android:layout_toEndOf="@+id/map03"
             android:layout_marginLeft="2dp"
@@ -313,8 +313,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map23"
             android:layout_toEndOf="@+id/map13"
             android:layout_marginLeft="2dp"
@@ -326,8 +326,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map33"
             android:layout_toEndOf="@+id/map23"
             android:layout_marginLeft="2dp"
@@ -339,8 +339,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map43"
             android:layout_toEndOf="@+id/map33"
             android:layout_marginLeft="2dp"
@@ -352,8 +352,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map53"
             android:layout_toEndOf="@+id/map43"
             android:layout_marginLeft="2dp"
@@ -365,8 +365,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map63"
             android:layout_toEndOf="@+id/map53"
             android:layout_marginLeft="2dp"
@@ -378,8 +378,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map04"
             android:layout_below="@+id/map03"
             android:layout_alignParentStart="true"
@@ -390,8 +390,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map14"
             android:layout_below="@+id/map13"
             android:layout_toEndOf="@+id/map04"
@@ -403,8 +403,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map24"
             android:layout_below="@+id/map23"
             android:layout_toEndOf="@+id/map14"
@@ -416,8 +416,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map34"
             android:layout_below="@+id/map23"
             android:layout_toEndOf="@+id/map24"
@@ -429,8 +429,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map44"
             android:layout_below="@+id/map33"
             android:layout_toEndOf="@+id/map34"
@@ -442,8 +442,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map54"
             android:layout_below="@+id/map53"
             android:layout_toEndOf="@+id/map44"
@@ -455,8 +455,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map64"
             android:layout_below="@+id/map53"
             android:layout_toEndOf="@+id/map54"
@@ -468,8 +468,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map05"
             android:layout_below="@+id/map04"
             android:layout_alignParentStart="true"
@@ -480,8 +480,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map15"
             android:layout_below="@+id/map04"
             android:layout_toEndOf="@+id/map05"
@@ -493,8 +493,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map25"
             android:layout_below="@+id/map14"
             android:layout_toEndOf="@+id/map15"
@@ -506,8 +506,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map35"
             android:layout_below="@+id/map34"
             android:layout_toEndOf="@+id/map25"
@@ -519,8 +519,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map45"
             android:layout_below="@+id/map44"
             android:layout_toEndOf="@+id/map34"
@@ -532,8 +532,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map55"
             android:layout_below="@+id/map44"
             android:layout_toEndOf="@+id/map45"
@@ -545,8 +545,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map65"
             android:layout_below="@+id/map54"
             android:layout_toEndOf="@+id/map55"
@@ -558,8 +558,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map06"
             android:layout_below="@+id/map05"
             android:layout_alignParentStart="true"
@@ -570,8 +570,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map16"
             android:layout_toEndOf="@+id/map06"
             android:layout_marginLeft="2dp"
@@ -583,8 +583,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map26"
             android:layout_toEndOf="@+id/map16"
             android:layout_marginLeft="2dp"
@@ -596,8 +596,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map36"
             android:layout_toEndOf="@+id/map26"
             android:layout_marginLeft="2dp"
@@ -609,8 +609,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map46"
             android:layout_toEndOf="@+id/map36"
             android:layout_marginLeft="2dp"
@@ -622,8 +622,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map56"
             android:layout_toEndOf="@+id/map46"
             android:layout_marginLeft="2dp"
@@ -635,8 +635,8 @@
             android:scaleY="0.6" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/map66"
             android:layout_toEndOf="@+id/map56"
             android:layout_marginLeft="2dp"

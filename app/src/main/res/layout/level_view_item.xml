@@ -7,7 +7,7 @@
     <android.support.v7.widget.CardView
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:id="@+id/view"
+        android:id="@+id/cardView"
         app:cardBackgroundColor="@color/colorAccentBright"
         app:cardElevation="5dp"
         app:cardCornerRadius="5dp"
