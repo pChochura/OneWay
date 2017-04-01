@@ -1,11 +1,20 @@
 <resources>
     <string name="app_name">OneWay</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="level">Level</string>
     <string name="moves">Moves</string>
     <string name="hint">It\'s illegal move</string>
     <string name="not_ready">You\'re not ready!</string>
     <string name="sure">Are you sure?</string>
+    <string name="hint_1">\"In the beginning was the Word…\"</string>
+    <string name="hint_2">They say...</string>
+    <string name="hint_3">But not exactly</string>
+    <string name="hint_4">At the beginning of the Universe was nothing! Completely nothing...</string>
+    <string name="hint_5">One could say a vacuum. But not ordinary vacuum...</string>
+    <string name="hint_6">That vacuum was full of emptiness...\nBut it wasn\'t the enemy for energy!</string>
+    <string name="hint_7">Become a Creator for a moment! Direct the particles.</string>
+    <string name="hint_8">It\'s a particle</string>
+    <string name="hint_9">It\'s an antiparticle. Makes new molecule together with a particle</string>
+    <string name="hint_10">It\'s also an antiparticle. But it disapears together with a particle</string>
+    <string name="hint_11">Click on both and connect them!</string>
+    <string name="to_much_moves">Too much moves...</string>
 </resources>

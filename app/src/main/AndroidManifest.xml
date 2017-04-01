@@ -17,7 +17,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".PrologueActivity"/>
         <activity android:name=".StartActivity"/>
         <activity android:name=".LevelsActivity"/>
     </application>

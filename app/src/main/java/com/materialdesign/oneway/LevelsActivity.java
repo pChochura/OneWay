@@ -19,7 +19,7 @@ import java.util.Random;
 
 public class LevelsActivity extends Activity {
     final static int duration = 1000;
-    static int[] sections = new int[]{5, 3};
+    static int[] sections = new int[]{15, 3};
     String[] sectionNames = new String[]{"Just beginning", "Second round!"};
     static ArrayList<Integer> endedLevels = new ArrayList<>(), endedSections = new ArrayList<>();
     SectionsAdapter sectionsAdapter;
@@ -75,7 +75,7 @@ public class LevelsActivity extends Activity {
             @Override
             public void onItemClick(int position, View v) {
                 if(getSection(position - 1) == 0 || endedSection(getSection(position - 1) - 1) != -1) {
-                    MainActivity.currentLevel = position;
+                    PrologueActivity.currentLevel = position;
                     animateOut();
                 } else showHint(R.string.not_ready);
             }

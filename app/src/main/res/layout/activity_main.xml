@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.materialdesign.oneway.MainActivity"
-    android:background="#ffffff">
+    tools:context=".PrologueActivity"
+    android:background="#ffffff"
+    android:id="@+id/Background">
 
     <ImageView
         android:layout_width="match_parent"
@@ -15,54 +16,48 @@
         android:scaleType="centerCrop"
         android:alpha="0.2"
         android:scaleX="1.2"
-        android:scaleY="1.2"/>
+        android:scaleY="1.2"
+        />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imagelogo"
+        android:id="@+id/imageLogo"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="80dp"
-        android:src="@mipmap/logo"/>
+        android:src="@mipmap/triangle"
+        android:alpha="0"/>
 
-    <RelativeLayout
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Small Text"
+        android:id="@+id/textHint"
+        android:textColor="@color/colorPrimary"
+        android:textSize="35sp"
+        android:alpha="0"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:padding="40dp"
+        android:layout_centerInParent="true"/>
+
+    <RelativeLayout
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:id="@+id/Image"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="166dp"
-        android:rotation="0"
-        android:id="@+id/StartContainer">
+        android:layout_marginBottom="100dp">
 
         <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:id="@+id/imageDarkHole"
-            android:src="@mipmap/dark_hole"
-            android:layout_toRightOf="@+id/imageTriangle1"
-            android:onClick="clickStart"
-            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/imageHint"
+            android:background="@drawable/section_box"
+            android:alpha="0"
+            android:layout_alignParentBottom="false"
             />
-
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:id="@+id/imageTriangle1"
-            android:src="@mipmap/triangle"
-            android:layout_centerVertical="true"
-            android:rotation="90"
-            android:layout_marginRight="50dp"/>
-
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:id="@+id/imageTriangle2"
-            android:src="@mipmap/triangle_empty"
-            android:layout_centerVertical="true"
-            android:rotation="-90"
-            android:layout_toRightOf="@+id/imageDarkHole"
-            android:layout_marginLeft="50dp"/>
     </RelativeLayout>
 
 </RelativeLayout>
