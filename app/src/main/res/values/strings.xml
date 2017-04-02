@@ -17,4 +17,5 @@
     <string name="hint_10">It\'s also an antiparticle. But it disapears together with a particle</string>
     <string name="hint_11">Click on both and connect them!</string>
     <string name="to_much_moves">Too much moves...</string>
+    <string name="wrong_direction">It\'s wrong direction to collapse.</string>
 </resources>

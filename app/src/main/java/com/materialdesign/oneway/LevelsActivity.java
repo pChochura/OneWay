@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,12 +20,13 @@ import java.util.Random;
 
 public class LevelsActivity extends Activity {
     final static int duration = 1000;
-    static int[] sections = new int[]{15, 3};
+    static public int[] sections = new int[]{15, 3};
     String[] sectionNames = new String[]{"Just beginning", "Second round!"};
-    static ArrayList<Integer> endedLevels = new ArrayList<>(), endedSections = new ArrayList<>();
+    static ArrayList<Integer> finishedLevels = new ArrayList<>(), finishedSections = new ArrayList<>();
     SectionsAdapter sectionsAdapter;
     RecyclerView sectionRecyclerView;
     static Context context;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,12 +34,26 @@ public class LevelsActivity extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_levels);
 
+        sharedPreferences = getSharedPreferences("Levels", MODE_PRIVATE);
         context = getApplicationContext();
+        getFinishedLevels();
         setRecyclerView();
         findViewById(R.id.imageBackground).setTranslationX(StartActivity.backgroundTranslationX);
         findViewById(R.id.imageBackground).setTranslationY(StartActivity.backgroundTranslationY);
         setupBackgroundAnimation();
         animateIn();
+    }
+
+    private void getFinishedLevels() {
+        finishedLevels.clear();
+        for (int i = 0; i < sharedPreferences.getInt("countOfItems", 0); i++)
+            LevelsActivity.finishedLevels.add(sharedPreferences.getInt("level_" + i, 0));
+    }
+
+    private void saveFinishedLevels() {
+        sharedPreferences.edit().putInt("countOfItems", LevelsActivity.finishedLevels.size()).apply();
+        for (int i = 0; i < LevelsActivity.finishedLevels.size(); i++)
+            sharedPreferences.edit().putInt("level_" + i, LevelsActivity.finishedLevels.get(i)).apply();
     }
 
     private void animateIn() {
@@ -121,7 +137,7 @@ public class LevelsActivity extends Activity {
     public static int endedSection(int currentLevel) {
         int section = getSection(currentLevel);
         for(int i = 0; i < sections[section]; i++)
-            if(!endedLevels.contains(i + 1)) return -1;
+            if(!finishedLevels.contains(i + 1)) return -1;
         return section;
     }
 
@@ -155,12 +171,25 @@ public class LevelsActivity extends Activity {
     public static int getFirstUndoneLevel() {
         int maxLevels = 0;
         for(int section : sections) maxLevels += section;
-        for(int i = 1; i <= maxLevels; i++) if(!endedLevels.contains(i)) return i;
+        for(int i = 1; i <= maxLevels; i++) if(!finishedLevels.contains(i)) return i;
         return 0;
     }
 
     @Override
     public void onBackPressed() {
+        saveFinishedLevels();
         animateOut();
+    }
+
+    @Override
+    public void onPause() {
+        saveFinishedLevels();
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        saveFinishedLevels();
+        super.onStop();
     }
 }

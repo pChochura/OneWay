@@ -7,12 +7,14 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
@@ -34,6 +36,7 @@ public class StartActivity extends Activity {
     static LevelObject currentLevel;
     static Point firstObject, size;
     AnimatorSet hintAnimation;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,18 +44,33 @@ public class StartActivity extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_start);
 
+        sharedPreferences = getSharedPreferences("Levels", MODE_PRIVATE);
         size = new Point();
         getWindowManager().getDefaultDisplay().getSize(size);
 
         findViewById(R.id.imageBackground).setTranslationX(StartActivity.backgroundTranslationX);
         findViewById(R.id.imageBackground).setTranslationY(StartActivity.backgroundTranslationY);
 
+        getFinishedLevels();
         getBoard();
         setSizeOfTiles();
+        getFirstUndoneLevel();
         getLevel();
         setBoard();
         animateIn();
         setupBackgroundAnimation();
+    }
+
+    private void getFinishedLevels() {
+        LevelsActivity.finishedLevels.clear();
+        for (int i = 0; i < sharedPreferences.getInt("countOfItems", 0); i++)
+            LevelsActivity.finishedLevels.add(sharedPreferences.getInt("level_" + i, 0));
+    }
+
+    private void saveFinishedLevels() {
+        sharedPreferences.edit().putInt("countOfItems", LevelsActivity.finishedLevels.size()).apply();
+        for (int i = 0; i < LevelsActivity.finishedLevels.size(); i++)
+            sharedPreferences.edit().putInt("level_" + i, LevelsActivity.finishedLevels.get(i)).apply();
     }
 
     private void animateIn() {
@@ -120,12 +138,22 @@ public class StartActivity extends Activity {
                         tilesImageView[finalI][finalJ].setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                clickAtPos(finalI, finalJ);
+                                if(currentLevel.getMap()[finalI][finalJ] > 1)
+                                    clickAtPos(finalI, finalJ);
                             }
                         });
                     }
                 });
             }
+        }
+    }
+
+    private void getFirstUndoneLevel() {
+        int maxLevels = 0;
+        for(int section : LevelsActivity.sections) maxLevels += section;
+        for(int i = 1; i <= maxLevels; i++) if(!LevelsActivity.finishedLevels.contains(i)) {
+            PrologueActivity.currentLevel = i;
+            break;
         }
     }
 
@@ -270,7 +298,7 @@ public class StartActivity extends Activity {
             animationRunning = true;
             GradientDrawable shape = (GradientDrawable) ((LayerDrawable) tilesImageView[x][y].getBackground()).findDrawableByLayerId(R.id.card);
             animateColorShape(shape, getResources().getColor(R.color.colorAccentBright), getResources().getColor(R.color.colorAccent));
-            if(!clicked && currentLevel.getMap()[x][y] > 1) {
+            if(!clicked) {
                 checkHint(new Point(x, y));
                 firstObject = new Point(x, y);
                 clicked = true;
@@ -348,6 +376,10 @@ public class StartActivity extends Activity {
     }
 
     private void showHint(int hint) {
+        showHint(hint, 0);
+    }
+
+    private void showHint(int hint, final int delay) {
         findViewById(R.id.HintBox).setTranslationX(size.x / 2);
         findViewById(R.id.HintBox).setVisibility(View.VISIBLE);
         ((TextView) findViewById(R.id.textHint)).setText(getResources().getString(hint));
@@ -360,19 +392,24 @@ public class StartActivity extends Activity {
         set.addListener(new Animator.AnimatorListener() {
             @Override public void onAnimationStart(Animator animator) {}
             @Override public void onAnimationEnd(Animator animator) {
-                ObjectAnimator translation_2 = ObjectAnimator.ofFloat(findViewById(R.id.HintBox), "translationX", 0, -findViewById(R.id.HintBox).getWidth() * 2);
-                translation_2.setDuration(duration);
-                translation_2.setStartDelay(duration);
-                translation_2.setInterpolator(new AnticipateOvershootInterpolator());
-                translation_2.start();
-                translation_2.addListener(new Animator.AnimatorListener() {
-                    @Override public void onAnimationStart(Animator animator) {}
-                    @Override public void onAnimationEnd(Animator animator) {
-                        findViewById(R.id.HintBox).setVisibility(View.INVISIBLE);
+                new CountDownTimer(delay, delay) {
+                    @Override public void onTick(long l) {}
+                    @Override public void onFinish() {
+                        ObjectAnimator translation_2 = ObjectAnimator.ofFloat(findViewById(R.id.HintBox), "translationX", 0, -findViewById(R.id.HintBox).getWidth() * 2);
+                        translation_2.setDuration(duration);
+                        translation_2.setStartDelay(duration);
+                        translation_2.setInterpolator(new AnticipateOvershootInterpolator());
+                        translation_2.start();
+                        translation_2.addListener(new Animator.AnimatorListener() {
+                            @Override public void onAnimationStart(Animator animator) {}
+                            @Override public void onAnimationEnd(Animator animator) {
+                                findViewById(R.id.HintBox).setVisibility(View.INVISIBLE);
+                            }
+                            @Override public void onAnimationCancel(Animator animator) {}
+                            @Override public void onAnimationRepeat(Animator animator) {}
+                        });
                     }
-                    @Override public void onAnimationCancel(Animator animator) {}
-                    @Override public void onAnimationRepeat(Animator animator) {}
-                });
+                }.start();
             }
             @Override public void onAnimationCancel(Animator animator) {}
             @Override public void onAnimationRepeat(Animator animator) {}
@@ -421,7 +458,6 @@ public class StartActivity extends Activity {
                             setBoardByPos(midPoint.x, midPoint.y, false);
                             if (lastTriangle())
                                 collapseDarkHole();
-                            animationRunning = false;
                         }
                         @Override public void onAnimationCancel(Animator animator) {}
                         @Override public void onAnimationRepeat(Animator animator) {}
@@ -429,8 +465,8 @@ public class StartActivity extends Activity {
                 } else {
                     currentLevel.getMap()[midPoint.x][midPoint.y] = 2;
                     setBoardByPos(midPoint.x, midPoint.y, false);
-                    animationRunning = false;
                 }
+                animationRunning = false;
                 currentLevel.getMap()[first.x][first.y] = 0;
                 currentLevel.getMap()[second.x][second.y] = 0;
                 setBoardByPos(first.x, first.y, false);
@@ -475,14 +511,14 @@ public class StartActivity extends Activity {
                             set.addListener(new Animator.AnimatorListener() {
                                 @Override public void onAnimationStart(Animator animator) {}
                                 @Override public void onAnimationEnd(Animator animator) {
-                                    if(!LevelsActivity.endedLevels.contains(PrologueActivity.currentLevel))
-                                        LevelsActivity.endedLevels.add(PrologueActivity.currentLevel);
+                                    if(!LevelsActivity.finishedLevels.contains(PrologueActivity.currentLevel))
+                                        LevelsActivity.finishedLevels.add(PrologueActivity.currentLevel);
                                     if(PrologueActivity.currentLevel == LevelsActivity.sections[LevelsActivity.getSection(PrologueActivity.currentLevel - 1)] && LevelsActivity.endedSection(PrologueActivity.currentLevel) != -1 ||
                                             PrologueActivity.currentLevel != LevelsActivity.sections[LevelsActivity.getSection(PrologueActivity.currentLevel - 1)])
                                         PrologueActivity.currentLevel++;
                                     else clickBack(null);
                                     if(LevelsActivity.endedSection(PrologueActivity.currentLevel) != -1)
-                                        LevelsActivity.endedSections.add(LevelsActivity.endedSection(PrologueActivity.currentLevel));
+                                        LevelsActivity.finishedSections.add(LevelsActivity.endedSection(PrologueActivity.currentLevel));
                                     getLevel();
                                     setBoard();
                                     showBoard();
@@ -497,6 +533,9 @@ public class StartActivity extends Activity {
                     });
                 }
             });
+        } else {
+            showHint(R.string.wrong_direction, 2000);
+            clickRestart(null);
         }
     }
 
@@ -722,7 +761,20 @@ public class StartActivity extends Activity {
 
     @Override
     public void onBackPressed() {
+        saveFinishedLevels();
         if(findViewById(R.id.HintBox).getVisibility() == View.VISIBLE) super.onBackPressed();
         else showHint(R.string.sure);
+    }
+
+    @Override
+    public void onPause() {
+        saveFinishedLevels();
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        saveFinishedLevels();
+        super.onStop();
     }
 }

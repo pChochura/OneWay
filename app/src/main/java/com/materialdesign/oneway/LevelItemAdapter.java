@@ -81,7 +81,7 @@ public class LevelItemAdapter extends RecyclerView.Adapter<LevelItemAdapter.Data
     }
 
     private void setColors(DataObjectHolder holder, int position) {
-        if(LevelsActivity.endedLevels.contains(mDataSet.get(position).getIndex())) {
+        if(LevelsActivity.finishedLevels.contains(mDataSet.get(position).getIndex())) {
             holder.cardView.setCardBackgroundColor(LevelsActivity.context.getResources().getColor(R.color.colorPrimary));
             holder.textIndex.setTextColor(LevelsActivity.context.getResources().getColor(R.color.colorAccentBright));
         }

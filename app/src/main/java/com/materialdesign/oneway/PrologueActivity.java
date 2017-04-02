@@ -5,6 +5,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.graphics.Typeface;
@@ -24,24 +25,23 @@ public class PrologueActivity extends Activity {
     final int duration = 1000, numberOfHints = 11;
     static int currentLevel = 1;
     public static String PACKAGE_NAME;
-    int hint = 10;
+    int hint = 1;
     double hintDelay = 5;
     boolean imageAppear = false, imageDisappear = true;
     Typeface arconFont, timeBurnerFont, timeBurnerBoldFont;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_prologue);
 
         PACKAGE_NAME = getPackageName();
         arconFont = Typeface.createFromAsset(getAssets(), "fonts/Arcon.ttf");
         timeBurnerFont = Typeface.createFromAsset(getAssets(), "fonts/TimeBurner.ttf");
         timeBurnerBoldFont = Typeface.createFromAsset(getAssets(), "fonts/TimeBurnerBold.ttf");
-
-        startActivity(new Intent(getApplicationContext(), StartActivity.class));
-        finish();
+        sharedPreferences = getSharedPreferences("Tutorial", MODE_PRIVATE);
 
         setupBackgroundAnimation();
         showHint();
@@ -184,11 +184,18 @@ public class PrologueActivity extends Activity {
     }
 
     private void startGame() {
+        ObjectAnimator a_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageBackground), "alpha", findViewById(R.id.imageBackground).getAlpha(), 0.1f);
+        a_1.setDuration(duration);
+        a_1.start();
         hideHint(new Runnable() {
             @Override
             public void run() {
+                sharedPreferences.edit().putBoolean("tutorialEnded", true).apply();
+                StartActivity.backgroundTranslationX = findViewById(R.id.imageBackground).getTranslationX();
+                StartActivity.backgroundTranslationY = findViewById(R.id.imageBackground).getTranslationY();
                 startActivity(new Intent(getApplicationContext(), StartActivity.class));
                 finish();
+                overridePendingTransition(0, 0);
             }
         });
     }

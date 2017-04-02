@@ -13,7 +13,13 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        startActivity(new Intent(getApplicationContext(), PrologueActivity.class));
-        finish();
+
+        if(getSharedPreferences("Tutorial", MODE_PRIVATE).getBoolean("tutorialEnded", false)) {
+            startActivity(new Intent(getApplicationContext(), StartActivity.class));
+            finish();
+        } else {
+            startActivity(new Intent(getApplicationContext(), PrologueActivity.class));
+            finish();
+        }
     }
 }
