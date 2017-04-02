@@ -149,11 +149,14 @@ public class StartActivity extends Activity {
     }
 
     private void getFirstUndoneLevel() {
-        int maxLevels = 0;
-        for(int section : LevelsActivity.sections) maxLevels += section;
-        for(int i = 1; i <= maxLevels; i++) if(!LevelsActivity.finishedLevels.contains(i)) {
-            PrologueActivity.currentLevel = i;
-            break;
+        if(PrologueActivity.currentLevel == 1) {
+            int maxLevels = 0;
+            for (int section : LevelsActivity.sections) maxLevels += section;
+            for (int i = 1; i <= maxLevels; i++)
+                if (!LevelsActivity.finishedLevels.contains(i)) {
+                    PrologueActivity.currentLevel = i;
+                    break;
+                }
         }
     }
 

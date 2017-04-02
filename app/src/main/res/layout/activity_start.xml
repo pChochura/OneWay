@@ -79,7 +79,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            android:src="@mipmap/triangle_empty"/>
+            />
 
         <ImageView
             android:layout_width="45dp"
@@ -127,7 +127,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            android:src="@mipmap/triangle_empty"/>
+            />
 
         <ImageView
             android:layout_width="45dp"
@@ -179,7 +179,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            android:src="@mipmap/triangle_empty"/>
+            />
 
         <ImageView
             android:layout_width="45dp"
@@ -205,7 +205,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            android:src="@mipmap/triangle_dot"/>
+            />
 
         <ImageView
             android:layout_width="45dp"
@@ -307,7 +307,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            android:src="@mipmap/dark_hole"/>
+            />
 
         <ImageView
             android:layout_width="45dp"
@@ -333,7 +333,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            android:src="@mipmap/triangle"/>
+            />
 
         <ImageView
             android:layout_width="45dp"
@@ -359,7 +359,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            android:src="@mipmap/triangle"/>
+            />
 
         <ImageView
             android:layout_width="45dp"
@@ -385,7 +385,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            android:src="@mipmap/triangle"/>
+            />
 
         <ImageView
             android:layout_width="45dp"
@@ -410,7 +410,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            android:src="@mipmap/triangle_empty"/>
+            />
 
         <ImageView
             android:layout_width="45dp"
@@ -513,7 +513,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            android:src="@mipmap/triangle_empty"/>
+            />
 
         <ImageView
             android:layout_width="45dp"
@@ -565,7 +565,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            android:src="@mipmap/triangle_dot"/>
+            />
 
         <ImageView
             android:layout_width="45dp"
@@ -642,7 +642,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            android:src="@mipmap/triangle_empty"/>
+            />
 
         <ImageView
             android:layout_width="45dp"

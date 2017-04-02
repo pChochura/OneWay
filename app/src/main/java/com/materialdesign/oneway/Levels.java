@@ -98,6 +98,63 @@ public class Levels {
                 moves = 8;
                 difficulty = 3;
                 break;
+            case 9:
+                map[3][6] = 1; //Dark hole
+                map[0][0] = 2; //Triangle
+                map[6][0] = 2;
+                map[1][2] = 3; //Empty triangle
+                map[2][2] = 3;
+                map[4][2] = 3;
+                map[2][3] = 3;
+                map[4][3] = 3;
+                map[6][6] = 3;
+                map[2][6] = 4; //Dotted triangle
+                moves = 7;
+                difficulty = 3;
+                break;
+            case 10:
+                map[4][4] = 1; //Dark hole
+                map[0][0] = 2; //Triangle
+                map[3][3] = 2;
+                map[3][1] = 3; //Empty triangle
+                map[1][2] = 3;
+                map[4][2] = 3;
+                map[1][5] = 3;
+                map[2][6] = 3;
+                map[6][6] = 4; //Dotted triangle
+                moves = 6;
+                difficulty = 3;
+                break;
+            case 11:
+                map[3][5] = 1; //Dark hole
+                map[2][0] = 2; //Triangle
+                map[3][4] = 2;
+                map[0][6] = 2;
+                map[3][0] = 3; //Empty triangle
+                map[1][2] = 3;
+                map[5][2] = 3;
+                map[6][3] = 3;
+                map[6][5] = 3;
+                map[2][6] = 3;
+                map[0][0] = 4; //Dotted triangle
+                map[4][6] = 4;
+                moves = 8;
+                difficulty = 3;
+                break;
+            case 12:
+                map[0][6] = 1; //Dark hole
+                map[6][0] = 2; //Triangle
+                map[2][0] = 3; //Empty triangle
+                map[0][1] = 3;
+                map[1][2] = 3;
+                map[6][4] = 3;
+                map[2][5] = 3;
+                map[3][6] = 3;
+                map[5][6] = 3;
+                moves = 7;
+                difficulty = 3;
+                break;
+
 
 
 
