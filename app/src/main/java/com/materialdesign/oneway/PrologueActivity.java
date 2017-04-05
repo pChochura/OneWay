@@ -23,7 +23,7 @@ import java.util.Random;
 
 public class PrologueActivity extends Activity {
     final int duration = 1000, numberOfHints = 11;
-    static int currentLevel = 1;
+    static int currentLevel = 0;
     public static String PACKAGE_NAME;
     int hint = 1;
     double hintDelay = 5;

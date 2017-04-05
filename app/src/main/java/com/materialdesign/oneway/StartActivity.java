@@ -149,7 +149,7 @@ public class StartActivity extends Activity {
     }
 
     private void getFirstUndoneLevel() {
-        if(PrologueActivity.currentLevel == 1) {
+        if(PrologueActivity.currentLevel == 0) {
             int maxLevels = 0;
             for (int section : LevelsActivity.sections) maxLevels += section;
             for (int i = 1; i <= maxLevels; i++)
@@ -235,6 +235,11 @@ public class StartActivity extends Activity {
     }
 
     public void clickBack(View view) {
+        if(clicked) {
+            GradientDrawable shape = (GradientDrawable) ((LayerDrawable) tilesImageView[firstObject.x][firstObject.y].getBackground()).findDrawableByLayerId(R.id.card);
+            animateColorShape(shape, getResources().getColor(R.color.colorAccent), getResources().getColor(R.color.colorAccentBright));
+            clicked = false;
+        }
         ObjectAnimator x_1 = ObjectAnimator.ofFloat(findViewById(R.id.Board), "x", findViewById(R.id.Board).getX(), size.x);
         ObjectAnimator x_2 = ObjectAnimator.ofFloat(findViewById(R.id.InformationContainer), "x", findViewById(R.id.InformationContainer).getX(), size.x);
         ObjectAnimator x_3 = ObjectAnimator.ofFloat(findViewById(R.id.BottomBar), "x", findViewById(R.id.BottomBar).getX(), size.x);
@@ -267,6 +272,11 @@ public class StartActivity extends Activity {
     public void clickRestart(View view) {
         if(!animationRunning) {
             animationRunning = true;
+            if(clicked) {
+                GradientDrawable shape = (GradientDrawable) ((LayerDrawable) tilesImageView[firstObject.x][firstObject.y].getBackground()).findDrawableByLayerId(R.id.card);
+                animateColorShape(shape, getResources().getColor(R.color.colorAccent), getResources().getColor(R.color.colorAccentBright));
+                clicked = false;
+            }
             ObjectAnimator rotation = ObjectAnimator.ofFloat(findViewById(R.id.imageRestart), "rotation", 0, 360);
             rotation.setDuration(duration);
             rotation.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -286,10 +296,6 @@ public class StartActivity extends Activity {
 
     private void setMoves() {
         ((TextView) findViewById(R.id.textMoves)).setText(getResources().getString(R.string.moves) + " " + (currentLevel.getMoves() - moves));
-        if(currentLevel.getMoves() - moves < 0) {
-            showHint(R.string.to_much_moves);
-            clickRestart(null);
-        }
     }
 
     private void setLevel() {
@@ -301,6 +307,7 @@ public class StartActivity extends Activity {
             animationRunning = true;
             GradientDrawable shape = (GradientDrawable) ((LayerDrawable) tilesImageView[x][y].getBackground()).findDrawableByLayerId(R.id.card);
             animateColorShape(shape, getResources().getColor(R.color.colorAccentBright), getResources().getColor(R.color.colorAccent));
+            rescaleTile(x, y);
             if(!clicked) {
                 checkHint(new Point(x, y));
                 firstObject = new Point(x, y);
@@ -346,6 +353,15 @@ public class StartActivity extends Activity {
                 clicked = false;
             }
         }
+    }
+
+    private void rescaleTile(int x, int y) {
+        ObjectAnimator sX = ObjectAnimator.ofFloat(mapImageView[x][y], "scaleX", mapImageView[x][y].getScaleX(), 0.6f);
+        ObjectAnimator sY = ObjectAnimator.ofFloat(mapImageView[x][y], "scaleY", mapImageView[x][y].getScaleY(), 0.6f);
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(sX, sY);
+        set.setDuration(duration);
+        set.start();
     }
 
     public void clickHint(View view) {
@@ -536,6 +552,10 @@ public class StartActivity extends Activity {
                     });
                 }
             });
+        } else if(currentLevel.getMoves() - moves == 0) {
+            showHint(R.string.to_much_moves);
+            animationRunning = false;
+            clickRestart(null);
         } else {
             showHint(R.string.wrong_direction, 2000);
             clickRestart(null);
