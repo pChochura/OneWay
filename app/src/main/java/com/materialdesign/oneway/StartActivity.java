@@ -27,16 +27,16 @@ import android.widget.TextView;
 import java.util.Random;
 
 public class StartActivity extends Activity {
-    static final int WIDTH = 7, HEIGHT = 7, duration = 1000;
-    static float backgroundTranslationX = 0, backgroundTranslationY = 0;
-    boolean animationRunning = false, clicked = false, hintAvailable = true;
-    int tileSize = 50, moves = 0, hint = 0;
-    ImageView[][] mapImageView = new ImageView[WIDTH][HEIGHT];
-    ImageView[][] tilesImageView = new ImageView[WIDTH][HEIGHT];
-    static LevelObject currentLevel;
-    static Point firstObject, size;
+    public static int WIDTH = 7, HEIGHT = 7, duration = 1000;
+    public static float backgroundTranslationX = 0, backgroundTranslationY = 0;
+    public boolean animationRunning = false, clicked = false, hintAvailable = true;
+    public int tileSize = 50, moves = 0, hint = 0, availableHints = 20;
+    public ImageView[][] mapImageView = new ImageView[WIDTH][HEIGHT];
+    public ImageView[][] tilesImageView = new ImageView[WIDTH][HEIGHT];
+    public static LevelObject currentLevel;
+    public static Point firstObject, size;
     AnimatorSet hintAnimation;
-    SharedPreferences sharedPreferences;
+    public SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,12 +63,14 @@ public class StartActivity extends Activity {
 
     private void getFinishedLevels() {
         LevelsActivity.finishedLevels.clear();
+        availableHints = sharedPreferences.getInt("availableHints", 20);
         for (int i = 0; i < sharedPreferences.getInt("countOfItems", 0); i++)
             LevelsActivity.finishedLevels.add(sharedPreferences.getInt("level_" + i, 0));
     }
 
     private void saveFinishedLevels() {
         sharedPreferences.edit().putInt("countOfItems", LevelsActivity.finishedLevels.size()).apply();
+        sharedPreferences.edit().putInt("availableHints", availableHints).apply();
         for (int i = 0; i < LevelsActivity.finishedLevels.size(); i++)
             sharedPreferences.edit().putInt("level_" + i, LevelsActivity.finishedLevels.get(i)).apply();
     }
@@ -88,7 +90,9 @@ public class StartActivity extends Activity {
         set.start();
     }
 
-    private void setSizeOfTiles() {
+    public void setSizeOfTiles() {
+        size = new Point();
+        getWindowManager().getDefaultDisplay().getSize(size);
         tileSize = (size.x - 100) / WIDTH;
         for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++) {
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mapImageView[i][j].getLayoutParams();
@@ -98,7 +102,7 @@ public class StartActivity extends Activity {
         }
     }
 
-    private void setupBackgroundAnimation() {
+    public void setupBackgroundAnimation() {
         ObjectAnimator translationY_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageBackground), "translationY", findViewById(R.id.imageBackground).getTranslationY(), new Random().nextInt(200) - 100);
         ObjectAnimator translationX_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageBackground), "translationX", findViewById(R.id.imageBackground).getTranslationX(), new Random().nextInt(150) - 75);
         AnimatorSet set = new AnimatorSet();
@@ -115,7 +119,7 @@ public class StartActivity extends Activity {
         });
     }
 
-    private void getBoard() {
+    public void getBoard() {
         for(int i = 0; i < WIDTH; i++) {
             for (int j = 0; j < HEIGHT; j++) {
                 mapImageView[i][j] = (ImageView) findViewById(getResources().getIdentifier("map" + i + j, "id", getPackageName()));
@@ -149,22 +153,22 @@ public class StartActivity extends Activity {
     }
 
     private void getFirstUndoneLevel() {
-        if(PrologueActivity.currentLevel == 0) {
+        if(PrologueActivity.chosenLevel == 0) {
             int maxLevels = 0;
             for (int section : LevelsActivity.sections) maxLevels += section;
             for (int i = 1; i <= maxLevels; i++)
                 if (!LevelsActivity.finishedLevels.contains(i)) {
-                    PrologueActivity.currentLevel = i;
+                    PrologueActivity.chosenLevel = i;
                     break;
                 }
         }
     }
 
-    private void getLevel() {
+    public void getLevel() {
         if(hintAnimation != null) hintAnimation.cancel();
         hintAvailable = true;
         hint = moves = 0;
-        currentLevel = Levels.getLevel(PrologueActivity.currentLevel);
+        currentLevel = Levels.getLevel(PrologueActivity.chosenLevel);
         setHintAvailable();
         setMoves();
         setLevel();
@@ -177,12 +181,12 @@ public class StartActivity extends Activity {
         alpha.start();
     }
 
-    private void setBoard() {
+    public void setBoard() {
         for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
             setBoardByPos(i, j, true);
     }
 
-    private void setBoardByPos(int x, int y, boolean hide) {
+    public void setBoardByPos(int x, int y, boolean hide) {
         if(tilesImageView[x][y] != null) {
             mapImageView[x][y].setX(tilesImageView[x][y].getX());
             mapImageView[x][y].setY(tilesImageView[x][y].getY());
@@ -214,12 +218,12 @@ public class StartActivity extends Activity {
         }
     }
 
-    private void showBoard() {
+    public void showBoard() {
         for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
             showBoardByPos(i, j);
     }
 
-    private void showBoardByPos(int x, int y) {
+    public void showBoardByPos(int x, int y) {
         ObjectAnimator animation_1, animation_2, animation_3;
         animation_1 = ObjectAnimator.ofFloat(mapImageView[x][y], "scaleX", 0, 0.6f);
         animation_2 = ObjectAnimator.ofFloat(mapImageView[x][y], "scaleY", 0, 0.6f);
@@ -235,30 +239,42 @@ public class StartActivity extends Activity {
     }
 
     public void clickBack(View view) {
-        if(clicked) {
-            GradientDrawable shape = (GradientDrawable) ((LayerDrawable) tilesImageView[firstObject.x][firstObject.y].getBackground()).findDrawableByLayerId(R.id.card);
-            animateColorShape(shape, getResources().getColor(R.color.colorAccent), getResources().getColor(R.color.colorAccentBright));
-            clicked = false;
-        }
-        ObjectAnimator x_1 = ObjectAnimator.ofFloat(findViewById(R.id.Board), "x", findViewById(R.id.Board).getX(), size.x);
-        ObjectAnimator x_2 = ObjectAnimator.ofFloat(findViewById(R.id.InformationContainer), "x", findViewById(R.id.InformationContainer).getX(), size.x);
-        ObjectAnimator x_3 = ObjectAnimator.ofFloat(findViewById(R.id.BottomBar), "x", findViewById(R.id.BottomBar).getX(), size.x);
-        ObjectAnimator alpha = ObjectAnimator.ofFloat(findViewById(R.id.imageLogo), "alpha", findViewById(R.id.imageLogo).getAlpha(), 0);
-        ObjectAnimator y_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageLogo), "translationY", findViewById(R.id.imageLogo).getTranslationY(), -50);
-        x_2.setStartDelay(duration / 4);
-        AnimatorSet set = new AnimatorSet();
-        set.playTogether(x_1, x_2, x_3, alpha, y_1);
-        set.setDuration(duration);
-        set.setInterpolator(new AnticipateOvershootInterpolator());
-        set.start();
-        set.addListener(new Animator.AnimatorListener() {
-            @Override public void onAnimationStart(Animator animator) {}
-            @Override public void onAnimationEnd(Animator animator) {
-                showAllLevels();
+        if(findViewById(R.id.HintChoiceBox).getVisibility() != View.VISIBLE) {
+            if (clicked) {
+                GradientDrawable shape = (GradientDrawable) ((LayerDrawable) tilesImageView[firstObject.x][firstObject.y].getBackground()).findDrawableByLayerId(R.id.card);
+                animateColorShape(shape, getResources().getColor(R.color.colorAccent), getResources().getColor(R.color.colorAccentBright));
+                clicked = false;
             }
-            @Override public void onAnimationCancel(Animator animator) {}
-            @Override public void onAnimationRepeat(Animator animator) {}
-        });
+            ObjectAnimator x_1 = ObjectAnimator.ofFloat(findViewById(R.id.Board), "x", findViewById(R.id.Board).getX(), size.x);
+            ObjectAnimator x_2 = ObjectAnimator.ofFloat(findViewById(R.id.InformationContainer), "x", findViewById(R.id.InformationContainer).getX(), size.x);
+            ObjectAnimator x_3 = ObjectAnimator.ofFloat(findViewById(R.id.BottomBar), "x", findViewById(R.id.BottomBar).getX(), size.x);
+            ObjectAnimator alpha = ObjectAnimator.ofFloat(findViewById(R.id.imageLogo), "alpha", findViewById(R.id.imageLogo).getAlpha(), 0);
+            ObjectAnimator y_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageLogo), "translationY", findViewById(R.id.imageLogo).getTranslationY(), -50);
+            x_2.setStartDelay(duration / 4);
+            AnimatorSet set = new AnimatorSet();
+            set.playTogether(x_1, x_2, x_3, alpha, y_1);
+            set.setDuration(duration);
+            set.setInterpolator(new AnticipateOvershootInterpolator());
+            set.start();
+            set.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    showAllLevels();
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+                }
+            });
+        }
     }
 
     private void showAllLevels() {
@@ -299,10 +315,10 @@ public class StartActivity extends Activity {
     }
 
     private void setLevel() {
-        ((TextView) findViewById(R.id.textLevel)).setText(getResources().getString(R.string.level) + " " + PrologueActivity.currentLevel);
+        ((TextView) findViewById(R.id.textLevel)).setText(getResources().getString(R.string.level) + " " + PrologueActivity.chosenLevel);
     }
 
-    private void clickAtPos(final int x, final int y) {
+    public void clickAtPos(final int x, final int y) {
         if(!animationRunning) {
             animationRunning = true;
             GradientDrawable shape = (GradientDrawable) ((LayerDrawable) tilesImageView[x][y].getBackground()).findDrawableByLayerId(R.id.card);
@@ -365,8 +381,40 @@ public class StartActivity extends Activity {
     }
 
     public void clickHint(View view) {
-        if(findViewById(R.id.imageHint).getAlpha() == 1 && hint < Hints.getHint(PrologueActivity.currentLevel).size()) {
-            ImageView imageView = mapImageView[Hints.getHint(PrologueActivity.currentLevel).get(hint).x][Hints.getHint(PrologueActivity.currentLevel).get(hint).y];
+        findViewById(R.id.HintChoiceBox).setVisibility(View.VISIBLE);
+        ((TextView) findViewById(R.id.textAvailableHints)).setText(getResources().getString(R.string.you_have) + " " + availableHints + " " + getResources().getString(R.string.hints));
+        ObjectAnimator sX_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintChoiceBox), "scaleX", 0, 1);
+        ObjectAnimator sY_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintChoiceBox), "scaleY", 0, 1);
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(sX_1, sY_1);
+        set.setDuration(duration);
+        set.setInterpolator(new AnticipateOvershootInterpolator());
+        set.start();
+    }
+
+    public void hideHints(View view) {
+        ObjectAnimator sX_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintChoiceBox), "scaleX", 1, 0);
+        ObjectAnimator sY_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintChoiceBox), "scaleY", 1, 0);
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(sX_1, sY_1);
+        set.setDuration(duration);
+        set.setInterpolator(new AnticipateOvershootInterpolator());
+        set.start();
+        set.addListener(new Animator.AnimatorListener() {
+            @Override public void onAnimationStart(Animator animator) {}
+            @Override public void onAnimationEnd(Animator animator) {
+                findViewById(R.id.HintChoiceBox).setVisibility(View.INVISIBLE);
+            }
+            @Override public void onAnimationCancel(Animator animator) {}
+            @Override public void onAnimationRepeat(Animator animator) {}
+        });
+    }
+
+    public void useHint(View view) {
+        if(findViewById(R.id.imageHint).getAlpha() == 1 && hint < Hints.getHint(PrologueActivity.chosenLevel).size() && availableHints > 0) {
+            availableHints--;
+            hideHints(null);
+            ImageView imageView = mapImageView[Hints.getHint(PrologueActivity.chosenLevel).get(hint).x][Hints.getHint(PrologueActivity.chosenLevel).get(hint).y];
             float previousScale = imageView.getScaleX();
             ObjectAnimator scaleX = ObjectAnimator.ofFloat(imageView, "scaleX", previousScale, 1, previousScale);
             scaleX.setRepeatCount(ValueAnimator.INFINITE);
@@ -383,9 +431,9 @@ public class StartActivity extends Activity {
 
     private void checkHint(Point point) {
         try {
-            hintAvailable = Hints.getHint(PrologueActivity.currentLevel).get(hint).equals(point) ||
-                    (Hints.getHint(PrologueActivity.currentLevel).size() > hint + 1 && Hints.getHint(PrologueActivity.currentLevel).get(hint + 1).equals(point)) ||
-                    (hint > 0 && Hints.getHint(PrologueActivity.currentLevel).get(hint - 1).equals(point));
+            hintAvailable = Hints.getHint(PrologueActivity.chosenLevel).get(hint).equals(point) ||
+                    (Hints.getHint(PrologueActivity.chosenLevel).size() > hint + 1 && Hints.getHint(PrologueActivity.chosenLevel).get(hint + 1).equals(point)) ||
+                    (hint > 0 && Hints.getHint(PrologueActivity.chosenLevel).get(hint - 1).equals(point));
             ObjectAnimator alpha = ObjectAnimator.ofFloat(findViewById(R.id.imageHint), "alpha", findViewById(R.id.imageHint).getAlpha(), hintAvailable ? 1f : 0.3f);
             alpha.setDuration(duration);
             alpha.start();
@@ -394,48 +442,73 @@ public class StartActivity extends Activity {
         } catch (Exception ignored) {}
     }
 
-    private void showHint(int hint) {
+    public void showHint(int hint) {
         showHint(hint, 0);
     }
 
-    private void showHint(int hint, final int delay) {
-        findViewById(R.id.HintBox).setTranslationX(size.x / 2);
-        findViewById(R.id.HintBox).setVisibility(View.VISIBLE);
-        ((TextView) findViewById(R.id.textHint)).setText(getResources().getString(hint));
-        ObjectAnimator translation_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintBox), "translationX", size.x, 0);
-        AnimatorSet set = new AnimatorSet();
-        set.playSequentially(translation_1);
-        set.setDuration(duration);
-        set.setInterpolator(new AnticipateOvershootInterpolator());
-        set.start();
-        set.addListener(new Animator.AnimatorListener() {
-            @Override public void onAnimationStart(Animator animator) {}
-            @Override public void onAnimationEnd(Animator animator) {
-                new CountDownTimer(delay, delay) {
-                    @Override public void onTick(long l) {}
-                    @Override public void onFinish() {
-                        ObjectAnimator translation_2 = ObjectAnimator.ofFloat(findViewById(R.id.HintBox), "translationX", 0, -findViewById(R.id.HintBox).getWidth() * 2);
-                        translation_2.setDuration(duration);
-                        translation_2.setStartDelay(duration);
-                        translation_2.setInterpolator(new AnticipateOvershootInterpolator());
-                        translation_2.start();
-                        translation_2.addListener(new Animator.AnimatorListener() {
-                            @Override public void onAnimationStart(Animator animator) {}
-                            @Override public void onAnimationEnd(Animator animator) {
-                                findViewById(R.id.HintBox).setVisibility(View.INVISIBLE);
-                            }
-                            @Override public void onAnimationCancel(Animator animator) {}
-                            @Override public void onAnimationRepeat(Animator animator) {}
-                        });
-                    }
-                }.start();
-            }
-            @Override public void onAnimationCancel(Animator animator) {}
-            @Override public void onAnimationRepeat(Animator animator) {}
-        });
+    public void showHint(int hint, final int delay) {
+        if(findViewById(R.id.HintBox).getVisibility() != View.VISIBLE) {
+            findViewById(R.id.HintBox).setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.textHint)).setText(getResources().getString(hint));
+            ObjectAnimator translation_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintBox), "translationX", size.x, 0);
+            AnimatorSet set = new AnimatorSet();
+            set.playSequentially(translation_1);
+            set.setDuration(duration);
+            set.setInterpolator(new AnticipateOvershootInterpolator());
+            set.start();
+            set.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    new CountDownTimer(delay, delay) {
+                        @Override
+                        public void onTick(long l) {
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            ObjectAnimator translation_2 = ObjectAnimator.ofFloat(findViewById(R.id.HintBox), "translationX", 0, -findViewById(R.id.HintBox).getWidth() * 2);
+                            translation_2.setDuration(duration);
+                            translation_2.setStartDelay(duration);
+                            translation_2.setInterpolator(new AnticipateOvershootInterpolator());
+                            translation_2.start();
+                            translation_2.addListener(new Animator.AnimatorListener() {
+                                @Override
+                                public void onAnimationStart(Animator animator) {
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animator animator) {
+                                    findViewById(R.id.HintBox).setVisibility(View.INVISIBLE);
+                                }
+
+                                @Override
+                                public void onAnimationCancel(Animator animator) {
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animator animator) {
+                                }
+                            });
+                        }
+                    }.start();
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+                }
+            });
+        }
     }
 
-    private void animateColorShape(final GradientDrawable shape, int colorFrom, int colorTo) {
+    public void animateColorShape(final GradientDrawable shape, int colorFrom, int colorTo) {
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
         colorAnimation.setDuration(duration);
         colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -446,7 +519,7 @@ public class StartActivity extends Activity {
         colorAnimation.start();
     }
 
-    private void collapseTriangles(final Point first, final Point second, final Point midPoint) {
+    public void collapseTriangles(final Point first, final Point second, final Point midPoint) {
         moves++;
         setMoves();
         ObjectAnimator x_1 = ObjectAnimator.ofFloat(mapImageView[first.x][first.y], "x", mapImageView[first.x][first.y].getX(), mapImageView[midPoint.x][midPoint.y].getX());
@@ -498,7 +571,7 @@ public class StartActivity extends Activity {
         });
     }
 
-    private void collapseDarkHole() {
+    public void collapseDarkHole() {
         ImageView lastTriangle = getLastTriangle();
         if(getLastTrianglePos().x == getDarkHolePos().x || getLastTrianglePos().y == getDarkHolePos().y ||
                 Math.abs(getLastTrianglePos().x - getDarkHolePos().x) == Math.abs(getLastTrianglePos().y - getDarkHolePos().y)) {
@@ -530,14 +603,14 @@ public class StartActivity extends Activity {
                             set.addListener(new Animator.AnimatorListener() {
                                 @Override public void onAnimationStart(Animator animator) {}
                                 @Override public void onAnimationEnd(Animator animator) {
-                                    if(!LevelsActivity.finishedLevels.contains(PrologueActivity.currentLevel))
-                                        LevelsActivity.finishedLevels.add(PrologueActivity.currentLevel);
-                                    if(PrologueActivity.currentLevel == LevelsActivity.sections[LevelsActivity.getSection(PrologueActivity.currentLevel - 1)] && LevelsActivity.endedSection(PrologueActivity.currentLevel) != -1 ||
-                                            PrologueActivity.currentLevel != LevelsActivity.sections[LevelsActivity.getSection(PrologueActivity.currentLevel - 1)])
-                                        PrologueActivity.currentLevel++;
+                                    if(!LevelsActivity.finishedLevels.contains(PrologueActivity.chosenLevel))
+                                        LevelsActivity.finishedLevels.add(PrologueActivity.chosenLevel);
+                                    if(PrologueActivity.chosenLevel == LevelsActivity.sections[LevelsActivity.getSection(PrologueActivity.chosenLevel - 1)] && LevelsActivity.endedSection(PrologueActivity.chosenLevel) != -1 ||
+                                            PrologueActivity.chosenLevel != LevelsActivity.sections[LevelsActivity.getSection(PrologueActivity.chosenLevel - 1)])
+                                        PrologueActivity.chosenLevel++;
                                     else clickBack(null);
-                                    if(LevelsActivity.endedSection(PrologueActivity.currentLevel) != -1)
-                                        LevelsActivity.finishedSections.add(LevelsActivity.endedSection(PrologueActivity.currentLevel));
+                                    if(LevelsActivity.endedSection(PrologueActivity.chosenLevel) != -1)
+                                        LevelsActivity.finishedSections.add(LevelsActivity.endedSection(PrologueActivity.chosenLevel));
                                     getLevel();
                                     setBoard();
                                     showBoard();
@@ -562,7 +635,7 @@ public class StartActivity extends Activity {
         }
     }
 
-    private void collapseBrightHole(final Point firstObject, final Point hole) {
+    public void collapseBrightHole(final Point firstObject, final Point hole) {
         moves++;
         setMoves();
         ObjectAnimator x = ObjectAnimator.ofFloat(mapImageView[firstObject.x][firstObject.y], "x", mapImageView[firstObject.x][firstObject.y].getX(), mapImageView[hole.x][hole.y].getX());
@@ -634,7 +707,7 @@ public class StartActivity extends Activity {
             }
     }
 
-    private void collapseTriangle(ImageView triangle, final Runnable runnable) {
+    public void collapseTriangle(ImageView triangle, final Runnable runnable) {
         ObjectAnimator x = ObjectAnimator.ofFloat(triangle, "x", triangle.getX(), getDarkHole().getX());
         ObjectAnimator y = ObjectAnimator.ofFloat(triangle, "y", triangle.getY(), getDarkHole().getY());
         ObjectAnimator alpha = ObjectAnimator.ofFloat(triangle, "alpha", triangle.getAlpha(), 0);
@@ -653,7 +726,7 @@ public class StartActivity extends Activity {
         });
     }
 
-    private void rotateTriangles(Point first, Point second) {
+    public void rotateTriangles(Point first, Point second) {
         ImageView triangle_1, triangle_2;
         if(first.x == second.x) {
             triangle_1 = first.y > second.y ? mapImageView[first.x][first.y] : mapImageView[second.x][second.y];
@@ -671,7 +744,7 @@ public class StartActivity extends Activity {
         set.start();
     }
 
-    private void rotateTriangles() {
+    public void rotateTriangles() {
         for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
             if(currentLevel.getMap()[i][j] == 2 || currentLevel.getMap()[i][j] == 3 || currentLevel.getMap()[i][j] == 4) {
                 final int finalI = i;
@@ -689,7 +762,7 @@ public class StartActivity extends Activity {
             }
     }
 
-    private void rotateTriangle(Point firstObject, Point point) {
+    public void rotateTriangle(Point firstObject, Point point) {
         float angle = getAngle(firstObject.x, firstObject.y, mapImageView[point.x][point.y]);
         ObjectAnimator rotate = ObjectAnimator.ofFloat(mapImageView[firstObject.x][firstObject.y], "rotation", mapImageView[firstObject.x][firstObject.y].getRotation(), angle);
         rotate.setDuration(duration);
@@ -697,7 +770,7 @@ public class StartActivity extends Activity {
         rotate.start();
     }
 
-    private void collapseAllTiles() {
+    public void collapseAllTiles() {
         for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++) {
             float angle = new Random().nextFloat() * 360;
             ObjectAnimator x_1 = ObjectAnimator.ofFloat(tilesImageView[i][j], "x", tilesImageView[i][j].getX(), getDarkHole().getX());
@@ -724,7 +797,7 @@ public class StartActivity extends Activity {
         }
     }
 
-    private void unMarkTile(int x, int y) {
+    public void unMarkTile(int x, int y) {
         GradientDrawable shape = ((GradientDrawable)((LayerDrawable) tilesImageView[x][y].getBackground()).findDrawableByLayerId(R.id.card));
         animateColorShape(shape, getResources().getColor(R.color.colorAccent), getResources().getColor(R.color.colorAccentBright));
     }
@@ -736,31 +809,31 @@ public class StartActivity extends Activity {
         return count;
     }
 
-    private ImageView getLastTriangle() {
+    public ImageView getLastTriangle() {
         for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
             if (currentLevel.getMap()[i][j] == 2 || currentLevel.getMap()[i][j] == 3 || currentLevel.getMap()[i][j] == 4) return mapImageView[i][j];
         return null;
     }
 
-    private Point getLastTrianglePos() {
+    public Point getLastTrianglePos() {
         for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
             if (currentLevel.getMap()[i][j] == 2 || currentLevel.getMap()[i][j] == 3 || currentLevel.getMap()[i][j] == 4) return new Point(i, j);
         return null;
     }
 
-    private ImageView getDarkHole() {
+    public ImageView getDarkHole() {
         for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
             if(currentLevel.getMap()[i][j] == 1) return mapImageView[i][j];
         return null;
     }
 
-    private Point getDarkHolePos() {
+    public Point getDarkHolePos() {
         for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
             if(currentLevel.getMap()[i][j] == 1) return new Point(i, j);
         return null;
     }
 
-    private boolean lastTriangle() {
+    public boolean lastTriangle() {
         for(int i = 0, count = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++) {
             if (currentLevel.getMap()[i][j] == 2 || currentLevel.getMap()[i][j] == 3) count++;
             if (count > 1) return false;
@@ -786,6 +859,8 @@ public class StartActivity extends Activity {
     public void onBackPressed() {
         saveFinishedLevels();
         if(findViewById(R.id.HintBox).getVisibility() == View.VISIBLE) super.onBackPressed();
+        else if(findViewById(R.id.HintChoiceBox).getVisibility() == View.VISIBLE)
+            hideHints(null);
         else showHint(R.string.sure);
     }
 

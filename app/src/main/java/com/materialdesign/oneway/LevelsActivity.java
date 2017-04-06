@@ -91,7 +91,7 @@ public class LevelsActivity extends Activity {
             @Override
             public void onItemClick(int position, View v) {
                 if(getSection(position - 1) == 0 || endedSection(getSection(position - 1) - 1) != -1) {
-                    PrologueActivity.currentLevel = position;
+                    PrologueActivity.chosenLevel = position;
                     animateOut();
                 } else showHint(R.string.not_ready);
             }

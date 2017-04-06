@@ -5,6 +5,38 @@ public class Levels {
         int moves = 0, difficulty = 0;
         int[][] map = new int[StartActivity.WIDTH][StartActivity.HEIGHT];
         switch(level) {
+            case 0:
+                map[2][1] = 1; //Dark hole
+                map[0][2] = 2; //Triangle
+                map[0][0] = 3; //Empty triangle
+                moves = 1;
+                difficulty = 0;
+                break;
+            case -1:
+                map[4][1] = 1; //Dark hole
+                map[0][2] = 2; //Triangle
+                map[0][1] = 3; //Empty triangle
+                map[4][0] = 3;
+                moves = 2;
+                difficulty = 0;
+                break;
+            case -2:
+                map[4][2] = 1; //Dark hole
+                map[0][1] = 2; //Triangle
+                map[0][2] = 2;
+                map[2][1] = 3; //Empty triangle
+                map[3][1] = 4; //Dotted triangle
+                moves = 2;
+                difficulty = 0;
+                break;
+            case -3:
+                map[4][1] = 1; //Dark hole
+                map[3][0] = 2; //Triangle
+                map[0][0] = 3; //Empty triangle
+                map[1][0] = 3;
+                moves = 2;
+                difficulty = 0;
+                break;
             case 1:
                 map[3][1] = 1; //Dark hole
                 map[5][2] = 2; //Triangle
