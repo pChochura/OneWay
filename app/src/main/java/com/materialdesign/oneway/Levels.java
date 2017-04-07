@@ -255,6 +255,126 @@ public class Levels {
                 difficulty = 5;
                 break;
             case 16:
+                map[1][6] = 1; //Dark hole
+                map[0][6] = 2; //Triangle
+                map[2][6] = 2;
+                map[5][6] = 2;
+                map[6][6] = 2;
+                map[0][0] = 3; //Empty triangle
+                map[2][0] = 3;
+                map[4][0] = 3;
+                map[1][1] = 3;
+                map[5][1] = 3;
+                map[6][1] = 3;
+                map[0][2] = 3;
+                map[1][2] = 3;
+                map[3][4] = 3;
+                map[4][4] = 3;
+                map[3][5] = 3;
+                map[6][5] = 3;
+                map[4][6] = 3;
+                map[3][1] = 4; //Dotted triangle
+                map[1][3] = 4;
+                map[5][4] = 4;
+                moves = 16;
+                difficulty = 5;
+                break;
+            case 17:
+                map[5][3] = 1; //Dark hole
+                map[6][2] = 2; //Triangle
+                map[2][3] = 2;
+                map[6][4] = 2;
+                map[1][0] = 3; //Empty triangle
+                map[6][0] = 3;
+                map[0][1] = 3;
+                map[5][1] = 3;
+                map[6][1] = 3;
+                map[4][2] = 3;
+                map[0][3] = 3;
+                map[6][3] = 3;
+                map[1][4] = 3;
+                map[5][4] = 3;
+                map[0][5] = 3;
+                map[4][5] = 3;
+                map[6][6] = 3;
+                map[1][1] = 4; //Dotted triangle
+                map[2][1] = 4;
+                moves = 15;
+                difficulty = 5;
+                break;
+            case 18:
+                map[0][0] = 1; //Dark hole
+                map[1][0] = 2; //Triangle
+                map[0][2] = 2;
+                map[6][6] = 2;
+                map[5][0] = 3; //Empty triangle
+                map[6][0] = 3;
+                map[1][1] = 3;
+                map[3][1] = 3;
+                map[6][1] = 3;
+                map[5][2] = 3;
+                map[0][3] = 3;
+                map[1][3] = 3;
+                map[0][4] = 3;
+                map[0][6] = 3;
+                map[5][4] = 3;
+                map[0][5] = 3;
+                map[1][5] = 3;
+                map[1][2] = 3;
+                map[5][5] = 3;
+                map[3][6] = 3;
+                map[6][3] = 4; //Dotted triangle
+                map[1][6] = 4;
+                moves = 18;
+                difficulty = 4;
+                break;
+            case 19:
+                map[0][3] = 1; //Dark hole
+                map[0][0] = 2; //Triangle
+                map[6][0] = 2;
+                map[6][6] = 2;
+                map[2][0] = 3; //Empty triangle
+                map[5][0] = 3;
+                map[0][1] = 3;
+                map[3][1] = 3;
+                map[6][1] = 3;
+                map[2][2] = 3;
+                map[6][2] = 3;
+                map[5][3] = 3;
+                map[0][5] = 3;
+                map[1][5] = 3;
+                map[3][5] = 3;
+                map[6][5] = 3;
+                map[1][6] = 3;
+                map[5][1] = 4; //Dotted triangle
+                map[2][3] = 4;
+                moves = 15;
+                difficulty = 4;
+                break;
+            case 20:
+                map[1][1] = 1; //Dark hole
+                map[0][0] = 2; //Triangle
+                map[2][0] = 2;
+                map[6][6] = 2;
+                map[3][0] = 3; //Empty triangle
+                map[6][0] = 3;
+                map[0][1] = 3;
+                map[2][1] = 3;
+                map[5][1] = 3;
+                map[6][1] = 3;
+                map[4][2] = 3;
+                map[1][3] = 3;
+                map[0][4] = 3;
+                map[4][4] = 3;
+                map[6][4] = 3;
+                map[1][5] = 3;
+                map[1][6] = 3;
+                map[3][4] = 4; //Dotted triangle
+                map[2][6] = 4;
+                moves = 15;
+                difficulty = 4;
+                break;
+            case 21:
                 map[1][1] = 1; //Dark hole
                 map[4][2] = 2; //Triangle
                 map[3][1] = 3; //Empty triangle

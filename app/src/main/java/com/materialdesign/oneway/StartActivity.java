@@ -153,12 +153,12 @@ public class StartActivity extends Activity {
     }
 
     private void getFirstUndoneLevel() {
-        if(PrologueActivity.chosenLevel == 0) {
+        if(TutorialActivity.chosenLevel == 0) {
             int maxLevels = 0;
             for (int section : LevelsActivity.sections) maxLevels += section;
             for (int i = 1; i <= maxLevels; i++)
                 if (!LevelsActivity.finishedLevels.contains(i)) {
-                    PrologueActivity.chosenLevel = i;
+                    TutorialActivity.chosenLevel = i;
                     break;
                 }
         }
@@ -168,7 +168,7 @@ public class StartActivity extends Activity {
         if(hintAnimation != null) hintAnimation.cancel();
         hintAvailable = true;
         hint = moves = 0;
-        currentLevel = Levels.getLevel(PrologueActivity.chosenLevel);
+        currentLevel = Levels.getLevel(TutorialActivity.chosenLevel);
         setHintAvailable();
         setMoves();
         setLevel();
@@ -315,7 +315,7 @@ public class StartActivity extends Activity {
     }
 
     private void setLevel() {
-        ((TextView) findViewById(R.id.textLevel)).setText(getResources().getString(R.string.level) + " " + PrologueActivity.chosenLevel);
+        ((TextView) findViewById(R.id.textLevel)).setText(getResources().getString(R.string.level) + " " + TutorialActivity.chosenLevel);
     }
 
     public void clickAtPos(final int x, final int y) {
@@ -411,10 +411,10 @@ public class StartActivity extends Activity {
     }
 
     public void useHint(View view) {
-        if(findViewById(R.id.imageHint).getAlpha() == 1 && hint < Hints.getHint(PrologueActivity.chosenLevel).size() && availableHints > 0) {
+        if(findViewById(R.id.imageHint).getAlpha() == 1 && hint < Hints.getHint(TutorialActivity.chosenLevel).size() && availableHints > 0) {
             availableHints--;
             hideHints(null);
-            ImageView imageView = mapImageView[Hints.getHint(PrologueActivity.chosenLevel).get(hint).x][Hints.getHint(PrologueActivity.chosenLevel).get(hint).y];
+            ImageView imageView = mapImageView[Hints.getHint(TutorialActivity.chosenLevel).get(hint).x][Hints.getHint(TutorialActivity.chosenLevel).get(hint).y];
             float previousScale = imageView.getScaleX();
             ObjectAnimator scaleX = ObjectAnimator.ofFloat(imageView, "scaleX", previousScale, 1, previousScale);
             scaleX.setRepeatCount(ValueAnimator.INFINITE);
@@ -431,9 +431,9 @@ public class StartActivity extends Activity {
 
     private void checkHint(Point point) {
         try {
-            hintAvailable = Hints.getHint(PrologueActivity.chosenLevel).get(hint).equals(point) ||
-                    (Hints.getHint(PrologueActivity.chosenLevel).size() > hint + 1 && Hints.getHint(PrologueActivity.chosenLevel).get(hint + 1).equals(point)) ||
-                    (hint > 0 && Hints.getHint(PrologueActivity.chosenLevel).get(hint - 1).equals(point));
+            hintAvailable = Hints.getHint(TutorialActivity.chosenLevel).get(hint).equals(point) ||
+                    (Hints.getHint(TutorialActivity.chosenLevel).size() > hint + 1 && Hints.getHint(TutorialActivity.chosenLevel).get(hint + 1).equals(point)) ||
+                    (hint > 0 && Hints.getHint(TutorialActivity.chosenLevel).get(hint - 1).equals(point));
             ObjectAnimator alpha = ObjectAnimator.ofFloat(findViewById(R.id.imageHint), "alpha", findViewById(R.id.imageHint).getAlpha(), hintAvailable ? 1f : 0.3f);
             alpha.setDuration(duration);
             alpha.start();
@@ -603,14 +603,14 @@ public class StartActivity extends Activity {
                             set.addListener(new Animator.AnimatorListener() {
                                 @Override public void onAnimationStart(Animator animator) {}
                                 @Override public void onAnimationEnd(Animator animator) {
-                                    if(!LevelsActivity.finishedLevels.contains(PrologueActivity.chosenLevel))
-                                        LevelsActivity.finishedLevels.add(PrologueActivity.chosenLevel);
-                                    if(PrologueActivity.chosenLevel == LevelsActivity.sections[LevelsActivity.getSection(PrologueActivity.chosenLevel - 1)] && LevelsActivity.endedSection(PrologueActivity.chosenLevel) != -1 ||
-                                            PrologueActivity.chosenLevel != LevelsActivity.sections[LevelsActivity.getSection(PrologueActivity.chosenLevel - 1)])
-                                        PrologueActivity.chosenLevel++;
+                                    if(!LevelsActivity.finishedLevels.contains(TutorialActivity.chosenLevel))
+                                        LevelsActivity.finishedLevels.add(TutorialActivity.chosenLevel);
+                                    if(TutorialActivity.chosenLevel == LevelsActivity.sections[LevelsActivity.getSection(TutorialActivity.chosenLevel - 1)] && LevelsActivity.endedSection(TutorialActivity.chosenLevel) != -1 ||
+                                            TutorialActivity.chosenLevel != LevelsActivity.sections[LevelsActivity.getSection(TutorialActivity.chosenLevel - 1)])
+                                        TutorialActivity.chosenLevel++;
                                     else clickBack(null);
-                                    if(LevelsActivity.endedSection(PrologueActivity.chosenLevel) != -1)
-                                        LevelsActivity.finishedSections.add(LevelsActivity.endedSection(PrologueActivity.chosenLevel));
+                                    if(LevelsActivity.endedSection(TutorialActivity.chosenLevel) != -1)
+                                        LevelsActivity.finishedSections.add(LevelsActivity.endedSection(TutorialActivity.chosenLevel));
                                     getLevel();
                                     setBoard();
                                     showBoard();

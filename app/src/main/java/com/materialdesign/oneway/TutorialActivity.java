@@ -17,7 +17,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnticipateOvershootInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -27,7 +26,7 @@ import android.widget.TextView;
 
 import java.util.Random;
 
-public class PrologueActivity extends Activity {
+public class TutorialActivity extends Activity {
     static int WIDTH = 5, HEIGHT = 3, duration = 1000;
     boolean animationRunning = false, clicked = false;
     int tileSize = 50;
@@ -38,7 +37,6 @@ public class PrologueActivity extends Activity {
     SharedPreferences sharedPreferences;
     static int chosenLevel = 0;
     public static String PACKAGE_NAME;
-    Typeface arconFont, timeBurnerFont, timeBurnerBoldFont;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +45,7 @@ public class PrologueActivity extends Activity {
         setContentView(R.layout.activity_prologue);
 
         PACKAGE_NAME = getPackageName();
-        arconFont = Typeface.createFromAsset(getAssets(), "fonts/Arcon.ttf");
-        timeBurnerFont = Typeface.createFromAsset(getAssets(), "fonts/TimeBurner.ttf");
-        timeBurnerBoldFont = Typeface.createFromAsset(getAssets(), "fonts/TimeBurnerBold.ttf");
+        ((TextView) findViewById(R.id.textHint)).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Arcon.ttf"));
         sharedPreferences = getSharedPreferences("Tutorial", MODE_PRIVATE);
 
         animateIn();
