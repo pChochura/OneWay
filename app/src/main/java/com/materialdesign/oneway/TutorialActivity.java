@@ -42,7 +42,7 @@ public class TutorialActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        setContentView(R.layout.activity_prologue);
+        setContentView(R.layout.activity_tutorial);
 
         PACKAGE_NAME = getPackageName();
         ((TextView) findViewById(R.id.textHint)).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Arcon.ttf"));
@@ -188,6 +188,29 @@ public class TutorialActivity extends Activity {
         set.setStartDelay(currentLevel.getMap()[x][y] != 1 ? duration : 0);
         set.setInterpolator(new AnticipateOvershootInterpolator());
         set.start();
+    }
+
+    public void showBoardByPos(int x, int y, final Runnable runnable) {
+        ObjectAnimator animation_1, animation_2, animation_3;
+        animation_1 = ObjectAnimator.ofFloat(mapImageView[x][y], "scaleX", 0, 0.6f);
+        animation_2 = ObjectAnimator.ofFloat(mapImageView[x][y], "scaleY", 0, 0.6f);
+        animation_3 = ObjectAnimator.ofFloat(tilesImageView[x][y], "alpha", tilesImageView[x][y].getAlpha(), 1f);
+        animation_3.setDuration(duration);
+        animation_3.start();
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(animation_1, animation_2);
+        set.setDuration(duration);
+        set.setStartDelay(currentLevel.getMap()[x][y] != 1 ? duration : 0);
+        set.setInterpolator(new AnticipateOvershootInterpolator());
+        set.start();
+        set.addListener(new Animator.AnimatorListener() {
+            @Override public void onAnimationStart(Animator animator) {}
+            @Override public void onAnimationEnd(Animator animator) {
+                runnable.run();
+            }
+            @Override public void onAnimationCancel(Animator animator) {}
+            @Override public void onAnimationRepeat(Animator animator) {}
+        });
     }
 
     public void clickAtPos(final int x, final int y) {
@@ -349,10 +372,20 @@ public class TutorialActivity extends Activity {
                                 @Override public void onAnimationStart(Animator animator) {}
                                 @Override public void onAnimationEnd(Animator animator) {
                                     chosenLevel--;
-                                    getLevel();
-                                    setBoard();
-                                    showBoard();
-                                    animationRunning = false;
+                                    if(chosenLevel != -7) {
+                                        getLevel();
+                                        setBoard();
+                                        showBoard();
+                                        animationRunning = false;
+                                    } else {
+                                        showHint(R.string.hint_7);
+                                        new CountDownTimer(5000, 5000) {
+                                            @Override public void onTick(long l) {}
+                                            @Override public void onFinish() {
+                                                startGame();
+                                            }
+                                        }.start();
+                                    }
                                 }
                                 @Override public void onAnimationCancel(Animator animator) {}
                                 @Override public void onAnimationRepeat(Animator animator) {}
@@ -364,14 +397,35 @@ public class TutorialActivity extends Activity {
                 }
             });
         } else {
-            showHint(R.string.hint_4);
-            new CountDownTimer(5000, 5000) {
-                @Override public void onTick(long l) {}
-                @Override
-                public void onFinish() {
-                    startGame();
+            ObjectAnimator scaleX = ObjectAnimator.ofFloat(getDarkHole(), "scaleX", getDarkHole().getScaleX(), 0);
+            ObjectAnimator scaleY = ObjectAnimator.ofFloat(getDarkHole(), "scaleY", getDarkHole().getScaleY(), 0);
+            AnimatorSet set = new AnimatorSet();
+            set.playTogether(scaleX, scaleY);
+            set.setDuration(duration * 3);
+            set.setInterpolator(new AccelerateInterpolator(4f));
+            set.start();
+            set.addListener(new Animator.AnimatorListener() {
+                @Override public void onAnimationStart(Animator animator) {}
+                @Override public void onAnimationEnd(Animator animator) {
+                    chosenLevel--;
+                    if(chosenLevel != -7) {
+                        getLevel();
+                        setBoard();
+                        showBoard();
+                        animationRunning = false;
+                    } else {
+                        showHint(R.string.hint_7);
+                        new CountDownTimer(5000, 5000) {
+                            @Override public void onTick(long l) {}
+                            @Override public void onFinish() {
+                                startGame();
+                            }
+                        }.start();
+                    }
                 }
-            }.start();
+                @Override public void onAnimationCancel(Animator animator) {}
+                @Override public void onAnimationRepeat(Animator animator) {}
+            });
         }
     }
 
@@ -404,7 +458,13 @@ public class TutorialActivity extends Activity {
                 currentLevel.getMap()[firstObject.x][firstObject.y] = 0;
                 setBoardByPos(firstObject.x, firstObject.y, false);
                 setBoardByPos(hole.x, hole.y, true);
-                showBoardByPos(hole.x, hole.y);
+                showBoardByPos(hole.x, hole.y, new Runnable() {
+                    @Override
+                    public void run() {
+                        if(lastTriangle())
+                            collapseDarkHole();
+                    }
+                });
                 rotateTriangles();
                 animationRunning = false;
             }

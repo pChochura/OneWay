@@ -37,6 +37,29 @@ public class Levels {
                 moves = 2;
                 difficulty = 0;
                 break;
+            case -4:
+                map[4][1] = 1; //Dark hole
+                map[0][1] = 3; //Empty triangle
+                map[2][1] = 5; //Bright hole
+                moves = 1;
+                difficulty = 0;
+                break;
+            case -5:
+                map[4][1] = 1; //Dark hole
+                map[4][0] = 2; //Triangle
+                map[0][1] = 4; //Dotted triangle
+                map[0][2] = 5; //Bright hole
+                moves = 2;
+                difficulty = 0;
+                break;
+            case -6:
+                map[4][1] = 1; //Dark hole
+                map[2][1] = 2; //Triangle
+                map[4][2] = 2;
+                map[0][2] = 5; //Bright hole
+                moves = 1;
+                difficulty = 0;
+                break;
             case 1:
                 map[3][1] = 1; //Dark hole
                 map[5][2] = 2; //Triangle

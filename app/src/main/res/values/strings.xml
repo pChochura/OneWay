@@ -11,7 +11,10 @@
     <string name="hint_1">Only if there\'s place for it!</string>
     <string name="hint_2">At times something disappears…</string>
     <string name="hint_3">Just for fun you can\'t</string>
-    <string name="hint_4">Remember! Only opposite triangles can be connected</string>
+    <string name="hint_4">Check what\'s going to happen!</string>
+    <string name="hint_5">Maybe this time something different…</string>
+    <string name="hint_6">That\'s last tip</string>
+    <string name="hint_7">Remember! Only opposite triangles can be connected</string>
     <string name="you_have">You have</string>
     <string name="do_you_want">Do you want to use one?</string>
     <string name="yes">Yes, of course!</string>
