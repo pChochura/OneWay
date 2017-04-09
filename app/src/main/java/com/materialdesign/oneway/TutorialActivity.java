@@ -555,6 +555,7 @@ public class TutorialActivity extends Activity {
     }
 
     private void startGame() {
+        if(clicked) unMarkTile(firstObject.x, firstObject.y);
         ObjectAnimator a_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageBackground), "alpha", findViewById(R.id.imageBackground).getAlpha(), 0.1f);
         ObjectAnimator a_2 = ObjectAnimator.ofFloat(findViewById(R.id.imageLogo), "alpha", findViewById(R.id.imageLogo).getAlpha(), 0);
         ObjectAnimator a_3 = ObjectAnimator.ofFloat(findViewById(R.id.textHint), "alpha", findViewById(R.id.textHint).getAlpha(), 0);

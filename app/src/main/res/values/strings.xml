@@ -5,13 +5,13 @@
     <string name="hint">It\'s illegal move</string>
     <string name="not_ready">You\'re not ready!</string>
     <string name="sure">Are you sure?</string>
-    <string name="to_much_moves">You\'re out of moves…</string>
+    <string name="too_much_moves">You\'re out of moves…</string>
     <string name="wrong_direction">It\'s wrong direction to collapse.</string>
     <string name="hint_0">Just click on both triangles</string>
     <string name="hint_1">Only if there\'s place for it!</string>
     <string name="hint_2">At times something disappears…</string>
     <string name="hint_3">Just for fun you can\'t</string>
-    <string name="hint_4">Remember! Enjoy</string>
+    <string name="hint_4">Remember! Only opposite triangles can be connected</string>
     <string name="you_have">You have</string>
     <string name="do_you_want">Do you want to use one?</string>
     <string name="yes">Yes, of course!</string>

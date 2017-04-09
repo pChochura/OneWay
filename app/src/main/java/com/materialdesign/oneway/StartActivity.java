@@ -9,13 +9,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnticipateOvershootInterpolator;
@@ -24,15 +28,21 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 
 public class StartActivity extends Activity {
-    public static int WIDTH = 7, HEIGHT = 7, duration = 1000;
-    public static float backgroundTranslationX = 0, backgroundTranslationY = 0;
-    public boolean animationRunning = false, clicked = false, hintAvailable = true;
-    public int tileSize = 50, moves = 0, hint = 0, availableHints = 20;
-    public ImageView[][] mapImageView = new ImageView[WIDTH][HEIGHT];
-    public ImageView[][] tilesImageView = new ImageView[WIDTH][HEIGHT];
+    static int WIDTH = 7, HEIGHT = 7, duration = 1000, maxObjects = 5;
+    static float backgroundTranslationX = 0, backgroundTranslationY = 0;
+    boolean animationRunning = false, clicked = false, hintAvailable = true, addingMode = false;
+    int tileSize = 50, moves = 0, hint = 0, availableHints = 20;
+    ImageView[][] mapImageView = new ImageView[WIDTH][HEIGHT];
+    ImageView[][] tilesImageView = new ImageView[WIDTH][HEIGHT];
+    TextView[][] texts = new TextView[WIDTH][HEIGHT];
+    ArrayList<Point> addingHints = new ArrayList<>();
     public static LevelObject currentLevel;
     public static Point firstObject, size;
     AnimatorSet hintAnimation;
@@ -132,23 +142,29 @@ public class StartActivity extends Activity {
                         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(mapImageView[finalI][finalJ].getWidth(), mapImageView[finalI][finalJ].getHeight());
                         tile.setX(mapImageView[finalI][finalJ].getX() - mapImageView[0][0].getLeft());
                         tile.setY(mapImageView[finalI][finalJ].getY() - mapImageView[0][0].getTop());
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            tile.setTranslationZ(-1);
-                            tile.setBackground(getResources().getDrawable(R.drawable.tile));
-                        }
+                        tile.setBackground(getResources().getDrawable(R.drawable.tile));
                         tile.setLayoutParams(layoutParams);
                         ((RelativeLayout) findViewById(R.id.Board)).addView(tile);
                         tilesImageView[finalI][finalJ] = tile;
                         tilesImageView[finalI][finalJ].setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                if(currentLevel.getMap()[finalI][finalJ] > 1)
+                                if(currentLevel.getMap()[finalI][finalJ] > 1 || addingMode)
                                     clickAtPos(finalI, finalJ);
                             }
                         });
+                        sendViewToBack(tile);
                     }
                 });
             }
+        }
+    }
+
+    public static void sendViewToBack(final View child) {
+        final ViewGroup parent = (ViewGroup)child.getParent();
+        if (null != parent) {
+            parent.removeView(child);
+            parent.addView(child, 0);
         }
     }
 
@@ -319,13 +335,21 @@ public class StartActivity extends Activity {
     }
 
     public void clickAtPos(final int x, final int y) {
-        if(!animationRunning) {
+        if(addingMode) {
+            if(currentLevel.getMap()[x][y] == 0) addingHints.add(new Point(x, y));
+            else if(currentLevel.getMap()[x][y] == maxObjects) addingHints.remove(addingHints.size() - 1);
+            currentLevel.getMap()[x][y] = currentLevel.getMap()[x][y] >= maxObjects ? 0 : currentLevel.getMap()[x][y] + 1;
+            setBoardByPos(x, y, false);
+            texts[x][y].setText("" + addingHints.size());
+        } else if(!animationRunning) {
             animationRunning = true;
             GradientDrawable shape = (GradientDrawable) ((LayerDrawable) tilesImageView[x][y].getBackground()).findDrawableByLayerId(R.id.card);
             animateColorShape(shape, getResources().getColor(R.color.colorAccentBright), getResources().getColor(R.color.colorAccent));
             rescaleTile(x, y);
             if(!clicked) {
-                checkHint(new Point(x, y));
+//                checkHint(new Point(x, y));
+                hint++;
+                if (hintAnimation != null) hintAnimation.cancel();
                 firstObject = new Point(x, y);
                 clicked = true;
                 animationRunning = false;
@@ -353,7 +377,7 @@ public class StartActivity extends Activity {
                         hint--;
                     }
                 } else if(typeSecond == 5 && (x == firstObject.x || y == firstObject.y || Math.abs(firstObject.x - x) == Math.abs(firstObject.y - y))) {
-                    checkHint(new Point(x, y));
+                    checkHint(new Point(firstObject.x, firstObject.y));
                     rotateTriangle(firstObject, new Point(x, y));
                     collapseBrightHole(firstObject, new Point(x, y));
                 } else if(!firstObject.equals(new Point(x, y))) {
@@ -548,8 +572,11 @@ public class StartActivity extends Activity {
                         @Override public void onAnimationEnd(Animator animator) {
                             currentLevel.getMap()[midPoint.x][midPoint.y] = 0;
                             setBoardByPos(midPoint.x, midPoint.y, false);
-                            if (lastTriangle())
-                                collapseDarkHole();
+                            if(currentLevel.getMoves() - moves == 0 && !lastTriangle()) {
+                                showHint(R.string.too_much_moves);
+                                animationRunning = false;
+                                clickRestart(null);
+                            } else collapseDarkHole();
                         }
                         @Override public void onAnimationCancel(Animator animator) {}
                         @Override public void onAnimationRepeat(Animator animator) {}
@@ -563,8 +590,7 @@ public class StartActivity extends Activity {
                 currentLevel.getMap()[second.x][second.y] = 0;
                 setBoardByPos(first.x, first.y, false);
                 setBoardByPos(second.x, second.y, false);
-                if(lastTriangle())
-                    collapseDarkHole();
+                collapseDarkHole();
             }
             @Override public void onAnimationCancel(Animator animator) {}
             @Override public void onAnimationRepeat(Animator animator) {}
@@ -573,8 +599,8 @@ public class StartActivity extends Activity {
 
     public void collapseDarkHole() {
         ImageView lastTriangle = getLastTriangle();
-        if(getLastTrianglePos().x == getDarkHolePos().x || getLastTrianglePos().y == getDarkHolePos().y ||
-                Math.abs(getLastTrianglePos().x - getDarkHolePos().x) == Math.abs(getLastTrianglePos().y - getDarkHolePos().y)) {
+        if(lastTriangle() && (getLastTrianglePos().x == getDarkHolePos().x || getLastTrianglePos().y == getDarkHolePos().y ||
+                Math.abs(getLastTrianglePos().x - getDarkHolePos().x) == Math.abs(getLastTrianglePos().y - getDarkHolePos().y))) {
             animationRunning = true;
             collapseTriangle(lastTriangle, new Runnable() {
                 @Override
@@ -605,12 +631,11 @@ public class StartActivity extends Activity {
                                 @Override public void onAnimationEnd(Animator animator) {
                                     if(!LevelsActivity.finishedLevels.contains(TutorialActivity.chosenLevel))
                                         LevelsActivity.finishedLevels.add(TutorialActivity.chosenLevel);
-                                    if(TutorialActivity.chosenLevel == LevelsActivity.sections[LevelsActivity.getSection(TutorialActivity.chosenLevel - 1)] && LevelsActivity.endedSection(TutorialActivity.chosenLevel) != -1 ||
-                                            TutorialActivity.chosenLevel != LevelsActivity.sections[LevelsActivity.getSection(TutorialActivity.chosenLevel - 1)])
+                                    int maxLevels = 0;
+                                    for(int section : LevelsActivity.sections) maxLevels += section;
+                                    if(TutorialActivity.chosenLevel < maxLevels)
                                         TutorialActivity.chosenLevel++;
                                     else clickBack(null);
-                                    if(LevelsActivity.endedSection(TutorialActivity.chosenLevel) != -1)
-                                        LevelsActivity.finishedSections.add(LevelsActivity.endedSection(TutorialActivity.chosenLevel));
                                     getLevel();
                                     setBoard();
                                     showBoard();
@@ -625,11 +650,7 @@ public class StartActivity extends Activity {
                     });
                 }
             });
-        } else if(currentLevel.getMoves() - moves == 0) {
-            showHint(R.string.to_much_moves);
-            animationRunning = false;
-            clickRestart(null);
-        } else {
+        } else if(lastTriangle()){
             showHint(R.string.wrong_direction, 2000);
             clickRestart(null);
         }
@@ -668,6 +689,11 @@ public class StartActivity extends Activity {
                 setBoardByPos(hole.x, hole.y, true);
                 showBoardByPos(hole.x, hole.y);
                 rotateTriangles();
+                if(currentLevel.getMoves() - moves == 0 && !lastTriangle()) {
+                    showHint(R.string.too_much_moves);
+                    animationRunning = false;
+                    clickRestart(null);
+                } else collapseDarkHole();
                 animationRunning = false;
             }
             @Override public void onAnimationCancel(Animator animator) {}
@@ -835,7 +861,7 @@ public class StartActivity extends Activity {
 
     public boolean lastTriangle() {
         for(int i = 0, count = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++) {
-            if (currentLevel.getMap()[i][j] == 2 || currentLevel.getMap()[i][j] == 3) count++;
+            if (currentLevel.getMap()[i][j] == 2 || currentLevel.getMap()[i][j] == 3 || currentLevel.getMap()[i][j] == 4) count++;
             if (count > 1) return false;
         }
         return true;
@@ -853,6 +879,155 @@ public class StartActivity extends Activity {
         else if(angle < -180)
             angle = angle + 360;
         return angle;
+    }
+
+    public void clickAddLevel(View view) {
+        if(!addingMode) {
+            setNumbers();
+            addingHints.clear();
+            startRotation();
+            resetBoard();
+            setBoard();
+            addingMode = true;
+            animationRunning = true;
+        } else {
+            removeTexts();
+            printMap();
+            printHints();
+            addingMode = false;
+            animationRunning = false;
+        }
+    }
+
+    private void takeScreenshot() {
+        Date now = new Date();
+        android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
+
+        try {
+            // image naming and path  to include sd card  appending name you choose for file
+            String mPath = Environment.getExternalStorageDirectory().toString() + "/" + now + ".jpg";
+
+            // create bitmap screen capture
+            View v1 = getWindow().getDecorView().getRootView();
+            v1.setDrawingCacheEnabled(true);
+            Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
+            v1.setDrawingCacheEnabled(false);
+
+            File imageFile = new File(mPath);
+
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+            int quality = 100;
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+            outputStream.flush();
+            outputStream.close();
+
+            openScreenshot(imageFile);
+        } catch (Throwable e) {
+            // Several error may come out with file handling or OOM
+            e.printStackTrace();
+        }
+    }
+
+    private void openScreenshot(File imageFile) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        Uri uri = Uri.fromFile(imageFile);
+        intent.setDataAndType(uri, "image/*");
+        startActivity(intent);
+    }
+
+    private void removeTexts() {
+        takeScreenshot();
+        for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
+            ((RelativeLayout) findViewById(R.id.Board)).removeView(texts[i][j]);
+    }
+
+    private void setNumbers() {
+        for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++) {
+            final int finalJ = j;
+            final int finalI = i;
+            mapImageView[i][j].post(new Runnable() {
+                @Override
+                public void run() {
+                    TextView text = new TextView(getApplicationContext());
+                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(mapImageView[finalI][finalJ].getWidth(), mapImageView[finalI][finalJ].getHeight());
+                    text.setX(mapImageView[finalI][finalJ].getX() - mapImageView[0][0].getLeft());
+                    text.setY(mapImageView[finalI][finalJ].getY() - mapImageView[0][0].getTop());
+                    text.setLayoutParams(layoutParams);
+                    text.setGravity(View.TEXT_ALIGNMENT_CENTER);
+                    text.setTextSize(20);
+                    text.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+                    ((RelativeLayout) findViewById(R.id.Board)).addView(text);
+                    text.bringToFront();
+                    text.invalidate();
+                    texts[finalI][finalJ] = text;
+                }
+            });
+        }
+    }
+
+    private void printHints() {
+        String output = "";
+        addingHints.remove(0);
+        for(int i = 0; i < addingHints.size(); i++)
+            output += "clicks.add(new Point(" + addingHints.get(i).x + ", " + addingHints.get(i).y + "));\n";
+        output += "break;\n";
+        Log.d("Hint", output);
+    }
+
+    private void printMap() {
+        int moves = 0;
+        String output = "";
+        output += "map[" + getDarkHolePos().x + "][" + getDarkHolePos().y + "] = 1; //Dark hole\n";
+        for(int i = 0, count = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
+            if(currentLevel.getMap()[i][j] == 2) {
+                output += "map[" + i + "][" + j + "] = 2" + (count == 0 ? "; //Triangle\n" : ";\n");
+                count++;
+            }
+        for(int i = 0, count = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
+            if(currentLevel.getMap()[i][j] == 3) {
+                output += "map[" + i + "][" + j + "] = 3" + (count == 0 ? "; //Empty triangle\n" : ";\n");
+                count++;
+                moves++;
+            }
+        for(int i = 0, count = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
+            if(currentLevel.getMap()[i][j] == 4) {
+                output += "map[" + i + "][" + j + "] = 4" + (count == 0 ? "; //Dotted triangle\n" : ";\n");
+                count++;
+                moves++;
+            }
+        for(int i = 0, count = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
+            if(currentLevel.getMap()[i][j] == 5) {
+                output += "map[" + i + "][" + j + "] = 5" + (count == 0 ? "; //Bright hole\n" : ";\n");
+                count++;
+            }
+        output += "moves = " + moves + ";\n";
+        output += "difficulty = 4;\n";
+        output += "break;\n";
+        Log.d("Level", output);
+    }
+
+    private void resetBoard() {
+        for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
+            currentLevel.getMap()[i][j] = 0;
+    }
+
+    private void startRotation() {
+        ObjectAnimator rotation = ObjectAnimator.ofFloat(findViewById(R.id.imageLogo), "rotation", 0, 10, -10);
+        rotation.setRepeatCount(1);
+        rotation.setRepeatMode(ValueAnimator.REVERSE);
+        rotation.setDuration(LevelsActivity.duration);
+        rotation.setInterpolator(new AccelerateInterpolator());
+        rotation.setStartDelay(StartActivity.duration);
+        rotation.start();
+        rotation.addListener(new Animator.AnimatorListener() {
+            @Override public void onAnimationStart(Animator animator) {}
+            @Override public void onAnimationEnd(Animator animator) {
+                if(addingMode) startRotation();
+            }
+            @Override public void onAnimationCancel(Animator animator) {}
+            @Override public void onAnimationRepeat(Animator animator) {}
+        });
     }
 
     @Override

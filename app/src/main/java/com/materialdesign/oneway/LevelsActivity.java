@@ -13,16 +13,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.animation.AnticipateOvershootInterpolator;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public class LevelsActivity extends Activity {
     final static int duration = 1000;
-    static public int[] sections = new int[]{20, 30};
+    static public int[] sections = new int[]{20, 10};
     String[] sectionNames = new String[]{"Just beginning", "Second round!"};
-    static ArrayList<Integer> finishedLevels = new ArrayList<>(), finishedSections = new ArrayList<>();
+    static ArrayList<Integer> finishedLevels = new ArrayList<>();
     SectionsAdapter sectionsAdapter;
     RecyclerView sectionRecyclerView;
     static Context context;
@@ -90,65 +89,22 @@ public class LevelsActivity extends Activity {
         SectionsAdapter.setOnItemClickListener(new SectionsAdapter.MyClickListener() {
             @Override
             public void onItemClick(int position, View v) {
-                if(getSection(position - 1) == 0 || endedSection(getSection(position - 1) - 1) != -1) {
-                    TutorialActivity.chosenLevel = position;
-                    animateOut();
-                } else showHint(R.string.not_ready);
+                TutorialActivity.chosenLevel = position;
+                animateOut();
             }
-        });
-    }
-
-    private void showHint(int hint) {
-        findViewById(R.id.HintBox).setTranslationX(StartActivity.size.x / 2);
-        findViewById(R.id.HintBox).setVisibility(View.VISIBLE);
-        ((TextView) findViewById(R.id.textHint)).setText(getResources().getString(hint));
-        ObjectAnimator translation_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintBox), "translationX", StartActivity.size.x, 0);
-        AnimatorSet set = new AnimatorSet();
-        set.playSequentially(translation_1);
-        set.setDuration(duration);
-        set.setInterpolator(new AnticipateOvershootInterpolator());
-        set.start();
-        set.addListener(new Animator.AnimatorListener() {
-            @Override public void onAnimationStart(Animator animator) {}
-            @Override public void onAnimationEnd(Animator animator) {
-                ObjectAnimator translation_2 = ObjectAnimator.ofFloat(findViewById(R.id.HintBox), "translationX", 0, -findViewById(R.id.HintBox).getWidth() * 2);
-                translation_2.setDuration(duration);
-                translation_2.setStartDelay(duration);
-                translation_2.setInterpolator(new AnticipateOvershootInterpolator());
-                translation_2.start();
-            }
-            @Override public void onAnimationCancel(Animator animator) {}
-            @Override public void onAnimationRepeat(Animator animator) {}
         });
     }
 
     private ArrayList<SectionObject> getSections() {
         ArrayList<LevelObject> levels = new ArrayList<>();
         ArrayList<SectionObject> sections = new ArrayList<>();
-        for (int i = 0, index = 1; i < this.sections.length; i++) {
-            for (int j = 0; j < this.sections[i]; j++, index++)
+        for (int i = 0, index = 1; i < LevelsActivity.sections.length; i++) {
+            for (int j = 0; j < LevelsActivity.sections[i]; j++, index++)
                 levels.add(new LevelObject(index, Levels.getLevel(index - 1).getMoves(), Levels.getLevel(index - 1).getDifficulty()));
             sections.add(new SectionObject(sectionNames[i], levels));
             levels = new ArrayList<>();
         }
         return sections;
-    }
-
-    public static int endedSection(int currentLevel) {
-        int section = getSection(currentLevel);
-        for(int i = 0; i < sections[section]; i++)
-            if(!finishedLevels.contains(i + 1)) return -1;
-        return section;
-    }
-
-    public static int getSection(int currentLevel) {
-        int index = -1;
-        for(int j = 0; j < sections.length; j++)
-            for(int i = 0; i < sections[j]; i++) {
-                index++;
-                if (index == currentLevel) return j;
-            }
-        return -1;
     }
 
     private void setupBackgroundAnimation() {

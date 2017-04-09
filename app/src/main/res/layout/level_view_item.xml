@@ -9,7 +9,7 @@
         android:layout_height="50dp"
         android:id="@+id/cardView"
         app:cardBackgroundColor="@color/colorAccentBright"
-        app:cardElevation="5dp"
+        app:cardElevation="3dp"
         app:cardCornerRadius="5dp"
         app:cardUseCompatPadding="false"
         app:cardPreventCornerOverlap="false"
