@@ -21,4 +21,5 @@
     <string name="yes">Yes, of course!</string>
     <string name="no">No, give me time</string>
     <string name="hints">hints.</string>
+    <string name="watch_ad">Watch an ad (+2)</string>
 </resources>

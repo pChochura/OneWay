@@ -79,7 +79,7 @@ public class TutorialActivity extends Activity {
 
     public void setupBackgroundAnimation() {
         ObjectAnimator translationY_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageBackground), "translationY", findViewById(R.id.imageBackground).getTranslationY(), new Random().nextInt(200) - 100);
-        ObjectAnimator translationX_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageBackground), "translationX", findViewById(R.id.imageBackground).getTranslationX(), new Random().nextInt(150) - 75);
+        ObjectAnimator translationX_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageBackground), "translationX", findViewById(R.id.imageBackground).getTranslationX(), new Random().nextInt(80) - 40);
         AnimatorSet set = new AnimatorSet();
         set.playTogether(translationX_1, translationY_1);
         set.setDuration(duration * 30);

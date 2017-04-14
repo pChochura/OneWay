@@ -6,6 +6,7 @@ import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -14,6 +15,8 @@ import android.graphics.Point;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -43,10 +46,13 @@ import java.util.Date;
 import java.util.Random;
 
 public class StartActivity extends Activity implements RewardedVideoAdListener {
+    private static final String APP_ID = "ca-app-pub-3743875596921560~1057055337";
     static int WIDTH = 7, HEIGHT = 7, duration = 1000, maxObjects = 5;
     static float backgroundTranslationX = 0, backgroundTranslationY = 0;
     boolean animationRunning = false, clicked = false, hintAvailable = true, addingMode = false;
-    int tileSize = 50, moves = 0, hint = 0, availableHints = 20;
+    static boolean developer = false, adWatched = false;
+    static int developerClicks = 5;
+    int tileSize = 50, moves = 0, hint = 0, availableHints = 10;
     ImageView[][] mapImageView = new ImageView[WIDTH][HEIGHT];
     ImageView[][] tilesImageView = new ImageView[WIDTH][HEIGHT];
     TextView[][] texts = new TextView[WIDTH][HEIGHT];
@@ -63,6 +69,7 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_start);
 
+        MobileAds.initialize(this, APP_ID);
         mAd = MobileAds.getRewardedVideoAdInstance(this);
         mAd.setRewardedVideoAdListener(this);
         sharedPreferences = getSharedPreferences("Levels", MODE_PRIVATE);
@@ -75,7 +82,7 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
         ((TextView) findViewById(R.id.textLevel)).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Arcon.ttf"));
         ((TextView) findViewById(R.id.textHint)).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Arcon.ttf"));
 
-        loadVideoRewardedAd();
+        if(isOnline()) loadVideoRewardedAd();
         getFinishedLevels();
         getBoard();
         setSizeOfTiles();
@@ -84,10 +91,6 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
         setBoard();
         animateIn();
         setupBackgroundAnimation();
-    }
-
-    private void loadVideoRewardedAd() {
-        mAd.loadAd(getResources().getString(R.string.fullscreen_ad_hints), new AdRequest.Builder().build());
     }
 
     private void getFinishedLevels() {
@@ -204,6 +207,7 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
         hintAvailable = true;
         hint = moves = 0;
         currentLevel = Levels.getLevel(TutorialActivity.chosenLevel);
+        if(adWatched) loadMap();
         setHintAvailable();
         setMoves();
         setLevel();
@@ -353,7 +357,8 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
             else if(currentLevel.getMap()[x][y] == maxObjects) addingHints.remove(addingHints.size() - 1);
             currentLevel.getMap()[x][y] = currentLevel.getMap()[x][y] >= maxObjects ? 0 : currentLevel.getMap()[x][y] + 1;
             setBoardByPos(x, y, false);
-            texts[x][y].setText("" + addingHints.size());
+            if(currentLevel.getMap()[x][y] != 0)
+                texts[x][y].setText("" + addingHints.size());
         } else if(!animationRunning) {
             animationRunning = true;
             GradientDrawable shape = (GradientDrawable) ((LayerDrawable) tilesImageView[x][y].getBackground()).findDrawableByLayerId(R.id.card);
@@ -427,10 +432,11 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
         if(findViewById(R.id.imageHint).getAlpha() == 1) {
             findViewById(R.id.HintChoiceBox).setVisibility(View.VISIBLE);
             ((TextView) findViewById(R.id.textAvailableHints)).setText(getResources().getString(R.string.you_have) + " " + availableHints + " " + getResources().getString(R.string.hints));
-            ObjectAnimator sX_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintChoiceBox), "scaleX", 0, 1);
-            ObjectAnimator sY_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintChoiceBox), "scaleY", 0, 1);
+            ObjectAnimator sX_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintChoiceBox), "scaleX", 0.6f, 1);
+            ObjectAnimator sY_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintChoiceBox), "scaleY", 0.6f, 1);
+            ObjectAnimator a_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintChoiceBox), "alpha", 0, 1);
             AnimatorSet set = new AnimatorSet();
-            set.playTogether(sX_1, sY_1);
+            set.playTogether(sX_1, sY_1, a_1);
             set.setDuration(duration);
             set.setInterpolator(new AnticipateOvershootInterpolator());
             set.start();
@@ -439,10 +445,11 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
     }
 
     public void hideHints(View view) {
-        ObjectAnimator sX_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintChoiceBox), "scaleX", 1, 0);
-        ObjectAnimator sY_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintChoiceBox), "scaleY", 1, 0);
+        ObjectAnimator sX_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintChoiceBox), "scaleX", 1, 0.6f);
+        ObjectAnimator sY_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintChoiceBox), "scaleY", 1, 0.6f);
+        ObjectAnimator a_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintChoiceBox), "alpha", 1, 0);
         AnimatorSet set = new AnimatorSet();
-        set.playTogether(sX_1, sY_1);
+        set.playTogether(sX_1, sY_1, a_1);
         set.setDuration(duration);
         set.setInterpolator(new AnticipateOvershootInterpolator());
         set.start();
@@ -458,10 +465,7 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
     }
 
     public void useHint(View view) {
-        if (mAd.isLoaded()) {
-            mAd.show();
-        }
-        /*if(hint < Hints.getHint(TutorialActivity.chosenLevel).size() && availableHints > 0) {
+        if(hint < Hints.getHint(TutorialActivity.chosenLevel).size() && availableHints > 0) {
             availableHints--;
             hideHints(null);
             ImageView imageView = mapImageView[Hints.getHint(TutorialActivity.chosenLevel).get(hint).x][Hints.getHint(TutorialActivity.chosenLevel).get(hint).y];
@@ -476,7 +480,15 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
             hintAnimation.playTogether(scaleX, scaleY);
             hintAnimation.setDuration(duration * 2);
             hintAnimation.start();
-        }*/
+        }
+    }
+
+    public void watchAd(View view) {
+        if (mAd.isLoaded()) {
+            if(clicked) unMarkTile(firstObject.x, firstObject.y);
+            mAd.show();
+        }
+        else loadVideoRewardedAd();
     }
 
     private void checkHint(Point point) {
@@ -610,6 +622,11 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
                 } else {
                     currentLevel.getMap()[midPoint.x][midPoint.y] = 2;
                     setBoardByPos(midPoint.x, midPoint.y, false);
+                    if(currentLevel.getMoves() - moves == 0 && !lastTriangle() && !animationRunning) {
+                        showHint(R.string.too_much_moves);
+                        animationRunning = false;
+                        clickRestart(null);
+                    }
                 }
                 animationRunning = false;
                 currentLevel.getMap()[first.x][first.y] = 0;
@@ -887,7 +904,8 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
 
     public boolean lastTriangle() {
         for(int i = 0, count = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++) {
-            if (currentLevel.getMap()[i][j] == 2 || currentLevel.getMap()[i][j] == 3 || currentLevel.getMap()[i][j] == 4) count++;
+            if (currentLevel.getMap()[i][j] == 2 || currentLevel.getMap()[i][j] == 3 ||
+                    currentLevel.getMap()[i][j] == 4 || currentLevel.getMap()[i][j] == 5) count++;
             if (count > 1) return false;
         }
         return true;
@@ -908,21 +926,51 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
     }
 
     public void clickAddLevel(View view) {
-        if(!addingMode) {
-            setNumbers();
-            addingHints.clear();
-            startRotation();
-            resetBoard();
-            setBoard();
-            addingMode = true;
-            animationRunning = true;
+        if(developer) {
+            if (!addingMode) {
+                setNumbers();
+                addingHints.clear();
+                startRotation();
+                resetBoard();
+                setBoard();
+                addingMode = true;
+                animationRunning = true;
+            } else if(!emptyMap()) {
+                removeTexts();
+                printMap();
+                printHints();
+                addingMode = false;
+                animationRunning = false;
+            } else {
+                addingMode = false;
+                animationRunning = false;
+                currentLevel = Levels.getLevel(TutorialActivity.chosenLevel);
+                setBoard();
+                rescaleAllTiles();
+                Log.d("LOG!", "here");
+            }
         } else {
-            removeTexts();
-            printMap();
-            printHints();
-            addingMode = false;
-            animationRunning = false;
+            if(developerClicks == 5) new CountDownTimer(3000, 3000) {
+                @Override public void onTick(long l) {}
+                @Override public void onFinish() {
+                    developerClicks = 5;
+                }
+            }.start();
+            if(developerClicks <= 3) Toast.makeText(getApplicationContext(), developerClicks + " to be the Map Editor!", Toast.LENGTH_SHORT).show();
+            if(developerClicks > 0) developerClicks--;
+            if(developerClicks == 0) developer = true;
         }
+    }
+
+    private void rescaleAllTiles() {
+        for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
+            rescaleTile(i, j);
+    }
+
+    private boolean emptyMap() {
+        for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
+            if(currentLevel.getMap()[i][j] != 0) return false;
+        return true;
     }
 
     private void takeScreenshot() {
@@ -1056,6 +1104,21 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
         });
     }
 
+    private void saveMap() {
+        for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
+            sharedPreferences.edit().putInt("map" + i + j, currentLevel.getMap()[i][j]).apply();
+        sharedPreferences.edit().putInt("moves", moves).apply();
+        sharedPreferences.edit().putInt("hint", clicked ? hint - 1 : hint).apply();
+    }
+
+    private void loadMap() {
+        for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
+            currentLevel.getMap()[i][j] = sharedPreferences.getInt("map" + i + j, 0);
+        adWatched = false;
+        moves = sharedPreferences.getInt("moves", moves);
+        hint = sharedPreferences.getInt("hint", hint);
+    }
+
     @Override
     public void onBackPressed() {
         saveFinishedLevels();
@@ -1091,40 +1154,47 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
         super.onDestroy();
     }
 
-    @Override
-    public void onRewardedVideoAdLoaded() {
-        Toast.makeText(this, "onRewardedVideoAdLoaded", Toast.LENGTH_SHORT).show();
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+    private void loadVideoRewardedAd() {
+        mAd.loadAd(getResources().getString(R.string.fullscreen_ad_hints), new AdRequest.Builder().build());
     }
 
     @Override
+    public void onRewardedVideoAdLoaded() {}
+
+    @Override
     public void onRewardedVideoAdOpened() {
-        Toast.makeText(this, "onRewardedVideoAdOpened", Toast.LENGTH_SHORT).show();
+        saveMap();
     }
 
     @Override
     public void onRewardedVideoStarted() {
-        Toast.makeText(this, "onRewardedVideoStarted", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoAdClosed() {
-        Toast.makeText(this, "onRewardedVideoAdClosed", Toast.LENGTH_SHORT).show();
+        loadVideoRewardedAd();
+//        loadMap();
+        adWatched = true;
     }
 
     @Override
     public void onRewarded(RewardItem rewardItem) {
-        Toast.makeText(this, "onRewarded! currency: " + rewardItem.getType() + "  amount: " +
-                rewardItem.getAmount(), Toast.LENGTH_SHORT).show();
+        availableHints += rewardItem.getAmount();
     }
 
     @Override
     public void onRewardedVideoAdLeftApplication() {
-        Toast.makeText(this, "onRewardedVideoAdLeftApplication",
-                Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoAdFailedToLoad(int i) {
-        Toast.makeText(this, "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Ad cannot be loaded", Toast.LENGTH_SHORT).show();
+        if(isOnline()) loadVideoRewardedAd();
     }
 }
