@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.materialdesign.oneway.StartActivity">
 
     <ImageView
@@ -25,7 +24,7 @@
         android:layout_marginTop="20dp"
         android:src="@mipmap/logo"
         android:alpha="0"
-        android:clickable="true"
+        android:clickable="false"
         android:onClick="clickAddLevel"/>
 
     <RelativeLayout
@@ -41,7 +40,7 @@
             android:layout_height="55dp"
             android:id="@+id/map00"
             android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
@@ -57,7 +56,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map00"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -69,7 +68,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map10"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -81,7 +80,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map20"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -93,7 +92,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map30"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -105,7 +104,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map40"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -117,7 +116,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map50"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -142,7 +141,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map01"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -155,7 +154,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map11"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -168,7 +167,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map21"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -181,6 +180,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
+            android:layout_toRightOf="@+id/map31"
             />
 
         <ImageView
@@ -194,7 +194,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map41"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -207,7 +207,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map51"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -232,7 +232,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map02"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -245,7 +245,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map12"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -258,7 +258,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map22"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -271,7 +271,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map32"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -284,7 +284,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map42"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -297,7 +297,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map52"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -322,7 +322,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map03"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -335,7 +335,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map13"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -348,6 +348,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
+            android:layout_toRightOf="@+id/map23"
             />
 
         <ImageView
@@ -361,7 +362,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map33"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -374,7 +375,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map43"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -387,7 +388,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map53"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -412,7 +413,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map04"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -425,7 +426,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map14"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -438,7 +439,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map24"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -451,7 +452,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map34"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -464,7 +465,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map44"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -477,7 +478,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map54"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -502,7 +503,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map05"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -515,6 +516,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
+            android:layout_toRightOf="@+id/map15"
             />
 
         <ImageView
@@ -528,7 +530,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map25"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -541,7 +543,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map35"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -554,7 +556,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map45"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -567,7 +569,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map55"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -592,7 +594,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map06"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -605,7 +607,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map16"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -618,7 +620,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map26"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -631,7 +633,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map36"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -644,7 +646,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map46"/>
 
         <ImageView
             android:layout_width="55dp"
@@ -657,7 +659,7 @@
             android:clickable="false"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            />
+            android:layout_toRightOf="@+id/map56"/>
 
     </RelativeLayout>
 
@@ -705,7 +707,7 @@
             android:layout_toLeftOf="@+id/imageDivider"/>
 
         <ImageView
-            android:layout_width="2dp"
+            android:layout_width="1dp"
             android:layout_height="wrap_content"
             android:id="@+id/imageDivider"
             android:layout_alignTop="@+id/textLevel"
@@ -739,7 +741,9 @@
             android:id="@+id/imageBack"
             android:src="@mipmap/ic_arrow_back"
             android:clickable="true"
-            android:onClick="clickBack" />
+            android:onClick="clickBack"
+            android:scaleX="0.6"
+            android:scaleY="0.6"/>
 
         <ImageView
             android:layout_width="50dp"
@@ -758,84 +762,83 @@
             android:layout_toRightOf="@+id/imageHint"
             android:src="@mipmap/ic_refresh"
             android:clickable="true"
-            android:onClick="clickRestart" />
+            android:onClick="clickRestart"
+            android:scaleX="0.6"
+            android:scaleY="0.6"/>
 
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/HintChoiceBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/HintChoiceBox"
-        android:paddingBottom="200dp"
-        android:paddingTop="200dp"
-        android:paddingLeft="50dp"
-        android:paddingRight="50dp"
-        android:visibility="gone"
-        android:clipToPadding="false">
+        android:layout_centerInParent="true"
+        android:background="@drawable/tile"
+        android:visibility="gone">
 
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/cardHintChoice"
-            app:cardElevation="3dp"
-            app:cardCornerRadius="5dp"
-            app:cardBackgroundColor="@color/colorAccentBright"
-            app:cardPreventCornerOverlap="true"
-            app:cardUseCompatPadding="false">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal">
+            <TextView
+                android:id="@+id/textAvailableHints"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:padding="30dp"
+                android:text="@string/you_have"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="25sp"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/you_have"
-                    android:id="@+id/textAvailableHints"
-                    android:layout_centerHorizontal="true"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="25sp"
-                    android:padding="30dp" />
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textAvailableHints"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:paddingBottom="10dp"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:paddingTop="10dp"
+                android:text="@string/do_you_want"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/do_you_want"
-                    android:id="@+id/textView"
-                    android:layout_below="@+id/textAvailableHints"
-                    android:layout_centerHorizontal="true"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="20sp"
-                    android:padding="10dp" />
+            <TextView
+                android:id="@+id/textYes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textView"
+                android:layout_alignParentBottom="false"
+                android:layout_alignParentStart="false"
+                android:layout_below="@+id/textView"
+                android:clickable="true"
+                android:gravity="center"
+                android:onClick="useHint"
+                android:padding="20dp"
+                android:text="@string/yes"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="@string/yes"
-                    android:id="@+id/textYes"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentStart="true"
-                    android:padding="20dp"
-                    android:clickable="true"
-                    android:onClick="useHint" />
+            <TextView
+                android:id="@+id/textNo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="false"
+                android:layout_alignParentEnd="false"
+                android:layout_alignRight="@+id/textView"
+                android:layout_below="@+id/textView"
+                android:clickable="true"
+                android:gravity="center"
+                android:onClick="hideHints"
+                android:padding="20dp"
+                android:text="@string/no"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="@string/no"
-                    android:id="@+id/textNo"
-                    android:padding="20dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentEnd="true"
-                    android:clickable="true"
-                    android:onClick="hideHints" />
+        </RelativeLayout>
 
-            </RelativeLayout>
-
-        </android.support.v7.widget.CardView>
     </RelativeLayout>
 
 </RelativeLayout>

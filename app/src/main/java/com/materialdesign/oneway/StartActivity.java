@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
@@ -27,6 +28,13 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,7 +42,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
-public class StartActivity extends Activity {
+public class StartActivity extends Activity implements RewardedVideoAdListener {
     static int WIDTH = 7, HEIGHT = 7, duration = 1000, maxObjects = 5;
     static float backgroundTranslationX = 0, backgroundTranslationY = 0;
     boolean animationRunning = false, clicked = false, hintAvailable = true, addingMode = false;
@@ -47,6 +55,7 @@ public class StartActivity extends Activity {
     public static Point firstObject, size;
     AnimatorSet hintAnimation;
     public SharedPreferences sharedPreferences;
+    private RewardedVideoAd mAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +63,19 @@ public class StartActivity extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_start);
 
+        mAd = MobileAds.getRewardedVideoAdInstance(this);
+        mAd.setRewardedVideoAdListener(this);
         sharedPreferences = getSharedPreferences("Levels", MODE_PRIVATE);
         size = new Point();
         getWindowManager().getDefaultDisplay().getSize(size);
 
         findViewById(R.id.imageBackground).setTranslationX(StartActivity.backgroundTranslationX);
         findViewById(R.id.imageBackground).setTranslationY(StartActivity.backgroundTranslationY);
+        ((TextView) findViewById(R.id.textMoves)).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Arcon.ttf"));
+        ((TextView) findViewById(R.id.textLevel)).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Arcon.ttf"));
+        ((TextView) findViewById(R.id.textHint)).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Arcon.ttf"));
 
+        loadVideoRewardedAd();
         getFinishedLevels();
         getBoard();
         setSizeOfTiles();
@@ -71,9 +86,13 @@ public class StartActivity extends Activity {
         setupBackgroundAnimation();
     }
 
+    private void loadVideoRewardedAd() {
+        mAd.loadAd(getResources().getString(R.string.fullscreen_ad_hints), new AdRequest.Builder().build());
+    }
+
     private void getFinishedLevels() {
         LevelsActivity.finishedLevels.clear();
-        availableHints = sharedPreferences.getInt("availableHints", 20);
+        availableHints = sharedPreferences.getInt("availableHints", availableHints);
         for (int i = 0; i < sharedPreferences.getInt("countOfItems", 0); i++)
             LevelsActivity.finishedLevels.add(sharedPreferences.getInt("level_" + i, 0));
     }
@@ -189,12 +208,6 @@ public class StartActivity extends Activity {
         setMoves();
         setLevel();
         rotateTriangles();
-    }
-
-    private void setHintAvailable() {
-        ObjectAnimator alpha = ObjectAnimator.ofFloat(findViewById(R.id.imageHint), "alpha", findViewById(R.id.imageHint).getAlpha(), 1);
-        alpha.setDuration(duration);
-        alpha.start();
     }
 
     public void setBoard() {
@@ -404,16 +417,25 @@ public class StartActivity extends Activity {
         set.start();
     }
 
+    private void setHintAvailable() {
+        ObjectAnimator alpha = ObjectAnimator.ofFloat(findViewById(R.id.imageHint), "alpha", findViewById(R.id.imageHint).getAlpha(), 1);
+        alpha.setDuration(duration);
+        alpha.start();
+    }
+
     public void clickHint(View view) {
-        findViewById(R.id.HintChoiceBox).setVisibility(View.VISIBLE);
-        ((TextView) findViewById(R.id.textAvailableHints)).setText(getResources().getString(R.string.you_have) + " " + availableHints + " " + getResources().getString(R.string.hints));
-        ObjectAnimator sX_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintChoiceBox), "scaleX", 0, 1);
-        ObjectAnimator sY_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintChoiceBox), "scaleY", 0, 1);
-        AnimatorSet set = new AnimatorSet();
-        set.playTogether(sX_1, sY_1);
-        set.setDuration(duration);
-        set.setInterpolator(new AnticipateOvershootInterpolator());
-        set.start();
+        if(findViewById(R.id.imageHint).getAlpha() == 1) {
+            findViewById(R.id.HintChoiceBox).setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.textAvailableHints)).setText(getResources().getString(R.string.you_have) + " " + availableHints + " " + getResources().getString(R.string.hints));
+            ObjectAnimator sX_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintChoiceBox), "scaleX", 0, 1);
+            ObjectAnimator sY_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintChoiceBox), "scaleY", 0, 1);
+            AnimatorSet set = new AnimatorSet();
+            set.playTogether(sX_1, sY_1);
+            set.setDuration(duration);
+            set.setInterpolator(new AnticipateOvershootInterpolator());
+            set.start();
+            animationRunning = true;
+        }
     }
 
     public void hideHints(View view) {
@@ -428,6 +450,7 @@ public class StartActivity extends Activity {
             @Override public void onAnimationStart(Animator animator) {}
             @Override public void onAnimationEnd(Animator animator) {
                 findViewById(R.id.HintChoiceBox).setVisibility(View.INVISIBLE);
+                animationRunning = false;
             }
             @Override public void onAnimationCancel(Animator animator) {}
             @Override public void onAnimationRepeat(Animator animator) {}
@@ -435,7 +458,10 @@ public class StartActivity extends Activity {
     }
 
     public void useHint(View view) {
-        if(findViewById(R.id.imageHint).getAlpha() == 1 && hint < Hints.getHint(TutorialActivity.chosenLevel).size() && availableHints > 0) {
+        if (mAd.isLoaded()) {
+            mAd.show();
+        }
+        /*if(hint < Hints.getHint(TutorialActivity.chosenLevel).size() && availableHints > 0) {
             availableHints--;
             hideHints(null);
             ImageView imageView = mapImageView[Hints.getHint(TutorialActivity.chosenLevel).get(hint).x][Hints.getHint(TutorialActivity.chosenLevel).get(hint).y];
@@ -450,7 +476,7 @@ public class StartActivity extends Activity {
             hintAnimation.playTogether(scaleX, scaleY);
             hintAnimation.setDuration(duration * 2);
             hintAnimation.start();
-        }
+        }*/
     }
 
     private void checkHint(Point point) {
@@ -1042,6 +1068,7 @@ public class StartActivity extends Activity {
     @Override
     public void onPause() {
         saveFinishedLevels();
+        mAd.pause(this);
         super.onPause();
     }
 
@@ -1049,5 +1076,55 @@ public class StartActivity extends Activity {
     protected void onStop() {
         saveFinishedLevels();
         super.onStop();
+    }
+
+    @Override
+    public void onResume() {
+        mAd.resume(this);
+        super.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        saveFinishedLevels();
+        mAd.destroy(this);
+        super.onDestroy();
+    }
+
+    @Override
+    public void onRewardedVideoAdLoaded() {
+        Toast.makeText(this, "onRewardedVideoAdLoaded", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdOpened() {
+        Toast.makeText(this, "onRewardedVideoAdOpened", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoStarted() {
+        Toast.makeText(this, "onRewardedVideoStarted", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdClosed() {
+        Toast.makeText(this, "onRewardedVideoAdClosed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewarded(RewardItem rewardItem) {
+        Toast.makeText(this, "onRewarded! currency: " + rewardItem.getType() + "  amount: " +
+                rewardItem.getAmount(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdLeftApplication() {
+        Toast.makeText(this, "onRewardedVideoAdLeftApplication",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdFailedToLoad(int i) {
+        Toast.makeText(this, "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
     }
 }

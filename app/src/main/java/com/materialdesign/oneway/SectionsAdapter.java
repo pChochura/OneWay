@@ -1,5 +1,6 @@
 package com.materialdesign.oneway;
 
+import android.graphics.Typeface;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -42,6 +43,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.DataOb
     @Override
     public void onBindViewHolder(final DataObjectHolder holder, int position) {
         holder.textSectionName.setText(mDataSet.get(position).getSectionName());
+        holder.textSectionName.setTypeface(Typeface.createFromAsset(LevelsActivity.context.getAssets(), "fonts/Arcon.ttf"));
         setRecyclerView(holder, position);
     }
 

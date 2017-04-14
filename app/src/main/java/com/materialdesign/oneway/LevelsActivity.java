@@ -19,7 +19,7 @@ import java.util.Random;
 
 public class LevelsActivity extends Activity {
     final static int duration = 1000;
-    static public int[] sections = new int[]{20, 10};
+    static public int[] sections = new int[]{20, 15};
     String[] sectionNames = new String[]{"Just beginning", "Second round!"};
     static ArrayList<Integer> finishedLevels = new ArrayList<>();
     SectionsAdapter sectionsAdapter;
@@ -147,5 +147,11 @@ public class LevelsActivity extends Activity {
     protected void onStop() {
         saveFinishedLevels();
         super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        saveFinishedLevels();
+        super.onDestroy();
     }
 }

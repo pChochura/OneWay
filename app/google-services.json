@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "375383941515",
+    "firebase_url": "https://oneway-1eae0.firebaseio.com",
+    "project_id": "oneway-1eae0",
+    "storage_bucket": "oneway-1eae0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:375383941515:android:b728d26f40925441",
+        "android_client_info": {
+          "package_name": "com.materialdesign.oneway"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "375383941515-h1plp6j0tolnghfmbjvvivn5u9tlo1jr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.materialdesign.oneway",
+            "certificate_hash": "53ac8f9ba3ab1dd44c2c07b7b436d2a93e0a21e3"
+          }
+        },
+        {
+          "client_id": "375383941515-1a9j5fgr7s3t5h6ic9sdf8qiipqvnb3a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtgmshe3ymlpCgLOlCEbouq6GAmQEDVpM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "375383941515-1a9j5fgr7s3t5h6ic9sdf8qiipqvnb3a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

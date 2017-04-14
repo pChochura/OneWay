@@ -3,8 +3,12 @@ package com.materialdesign.oneway;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,12 +56,21 @@ public class LevelItemAdapter extends RecyclerView.Adapter<LevelItemAdapter.Data
         setOnClickListener(holder, position);
     }
 
+    public static float convertDpToPixel(float dp, Context context){
+        Resources resources = context.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float px = dp * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+        return px;
+    }
+
     private void setSizeOfTile(DataObjectHolder holder) {
-        int tileSize = (StartActivity.size.x - 250) / 5;
+        int tileSize = (int) (StartActivity.size.x - convertDpToPixel(110, LevelsActivity.context)) / 5;
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) holder.cardView.getLayoutParams();
         layoutParams.height = tileSize;
         layoutParams.width = tileSize;
         holder.cardView.setLayoutParams(layoutParams);
+        holder.textIndex.setTextSize(tileSize / 4);
+        holder.textIndex.setTypeface(Typeface.createFromAsset(LevelsActivity.context.getAssets(), "fonts/Arcon.ttf"));
     }
 
     private void setRotation(final DataObjectHolder holder, final int position) {

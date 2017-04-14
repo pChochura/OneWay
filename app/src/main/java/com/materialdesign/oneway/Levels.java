@@ -614,6 +614,143 @@ public class Levels {
                 moves = 16;
                 difficulty = 4;
                 break;
+            case 31:
+                map[3][6] = 1; //Dark hole
+                map[0][0] = 2; //Triangle
+                map[0][6] = 3; //Empty triangle
+                map[1][1] = 3;
+                map[1][3] = 3;
+                map[1][5] = 3;
+                map[2][0] = 3;
+                map[2][2] = 3;
+                map[4][0] = 3;
+                map[5][2] = 3;
+                map[5][5] = 3;
+                map[5][6] = 3;
+                map[6][0] = 3;
+                map[6][2] = 3;
+                map[6][3] = 3;
+                map[6][4] = 3;
+                map[1][6] = 5; //Bright hole
+                map[6][6] = 5;
+                moves = 15;
+                difficulty = 4;
+                break;
+            case 32:
+                map[0][0] = 1; //Dark hole
+                map[0][4] = 2; //Triangle
+                map[1][1] = 3; //Empty triangle
+                map[1][2] = 3;
+                map[1][6] = 3;
+                map[2][0] = 3;
+                map[2][6] = 3;
+                map[3][6] = 3;
+                map[5][0] = 3;
+                map[5][6] = 3;
+                map[6][0] = 3;
+                map[6][2] = 3;
+                map[6][3] = 3;
+                map[6][6] = 3;
+                map[1][5] = 4; //Dotted triangle
+                map[6][5] = 4;
+                map[0][6] = 5; //Bright hole
+                map[2][2] = 5;
+                map[6][1] = 5;
+                moves = 16;
+                difficulty = 4;
+                break;
+            case 33:
+                map[5][0] = 1; //Dark hole
+                map[0][0] = 2; //Triangle
+                map[0][3] = 3; //Empty triangle
+                map[1][1] = 3;
+                map[1][3] = 3;
+                map[1][5] = 3;
+                map[2][3] = 3;
+                map[2][0] = 3;
+                map[2][6] = 3;
+                map[3][2] = 3;
+                map[5][3] = 3;
+                map[5][6] = 3;
+                map[6][1] = 3;
+                map[6][2] = 3;
+                map[6][3] = 3;
+                map[6][6] = 3;
+                map[6][0] = 4; //Dotted triangle
+                map[0][2] = 5; //Bright hole
+                map[4][0] = 5;
+                map[6][5] = 5;
+                moves = 17;
+                difficulty = 4;
+                break;
+            case 34:
+                map[3][6] = 1; //Dark hole
+                map[2][2] = 2; //Triangle
+                map[0][0] = 3; //Empty triangle
+                map[0][4] = 3;
+                map[0][6] = 3;
+                map[1][6] = 3;
+                map[2][0] = 3;
+                map[3][3] = 3;
+                map[5][3] = 3;
+                map[5][5] = 3;
+                map[5][6] = 3;
+                map[6][4] = 3;
+                map[0][2] = 4; //Dotted triangle
+                map[6][0] = 4;
+                map[6][3] = 4;
+                map[1][1] = 5; //Bright hole
+                map[5][1] = 5;
+                map[6][6] = 5;
+                moves = 15;
+                difficulty = 4;
+                break;
+            case 35:
+                map[3][3] = 1; //Dark hole
+                map[5][0] = 2; //Triangle
+                map[5][1] = 2;
+                map[0][1] = 3; //Empty triangle
+                map[1][3] = 3;
+                map[1][6] = 3;
+                map[5][3] = 3;
+                map[5][6] = 3;
+                map[6][0] = 3;
+                map[6][5] = 3;
+                map[0][3] = 4; //Dotted triangle
+                map[3][1] = 4;
+                map[3][5] = 4;
+                map[3][6] = 4;
+                map[2][3] = 5; //Bright hole
+                map[3][2] = 5;
+                map[3][4] = 5;
+                map[4][3] = 5;
+                moves = 14;
+                difficulty = 4;
+                break;
+            case 36:
+                map[3][6] = 1; //Dark hole
+                map[0][4] = 2; //Triangle
+                map[0][1] = 3; //Empty triangle
+                map[0][6] = 3;
+                map[1][2] = 3;
+                map[1][4] = 3;
+                map[2][3] = 3;
+                map[3][1] = 3;
+                map[4][3] = 3;
+                map[5][1] = 3;
+                map[5][3] = 3;
+                map[6][1] = 3;
+                map[6][2] = 3;
+                map[6][4] = 3;
+                map[6][6] = 3;
+                map[5][6] = 4; //Dotted triangle
+                map[6][0] = 4;
+                map[3][3] = 5; //Bright hole
+                map[3][5] = 5;
+                map[4][6] = 5;
+                moves = 17;
+                difficulty = 4;
+                break;
         }
         return new LevelObject(level, moves, difficulty, map);
     }

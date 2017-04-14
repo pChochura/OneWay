@@ -13,10 +13,10 @@ import android.graphics.Point;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnticipateOvershootInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -107,10 +107,7 @@ public class TutorialActivity extends Activity {
                         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(mapImageView[finalI][finalJ].getWidth(), mapImageView[finalI][finalJ].getHeight());
                         tile.setX(mapImageView[finalI][finalJ].getX() - mapImageView[0][0].getLeft());
                         tile.setY(mapImageView[finalI][finalJ].getY() - mapImageView[0][0].getTop());
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            tile.setTranslationZ(-1);
-                            tile.setBackground(getResources().getDrawable(R.drawable.tile));
-                        }
+                        tile.setBackground(getResources().getDrawable(R.drawable.tile));
                         tile.setLayoutParams(layoutParams);
                         ((RelativeLayout) findViewById(R.id.Board)).addView(tile);
                         tilesImageView[finalI][finalJ] = tile;
@@ -121,9 +118,18 @@ public class TutorialActivity extends Activity {
                                     clickAtPos(finalI, finalJ);
                             }
                         });
+                        sendViewToBack(tile);
                     }
                 });
             }
+        }
+    }
+
+    public static void sendViewToBack(final View child) {
+        final ViewGroup parent = (ViewGroup)child.getParent();
+        if (null != parent) {
+            parent.removeView(child);
+            parent.addView(child, 0);
         }
     }
 
