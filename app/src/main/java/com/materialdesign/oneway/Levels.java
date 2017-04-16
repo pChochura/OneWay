@@ -1,7 +1,7 @@
 package com.materialdesign.oneway;
 
-public class Levels {
-    static public LevelObject getLevel(int level) {
+class Levels {
+    static LevelObject getLevel(int level) {
         int moves = 0, difficulty = 0;
         int[][] map = new int[StartActivity.WIDTH][StartActivity.HEIGHT];
         switch(level) {
@@ -58,6 +58,14 @@ public class Levels {
                 map[4][2] = 2;
                 map[0][2] = 5; //Bright hole
                 moves = 1;
+                difficulty = 0;
+                break;
+            case -7:
+                map[4][1] = 1; //Dark hole
+                map[4][2] = 2; //Triangle
+                map[0][0] = 3; //Empty triangle
+                map[2][1] = 5; //Bright hole
+                moves = 2;
                 difficulty = 0;
                 break;
             case 1:

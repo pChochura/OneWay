@@ -95,7 +95,7 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
 
     private void getFinishedLevels() {
         LevelsActivity.finishedLevels.clear();
-        availableHints = sharedPreferences.getInt("availableHints", availableHints);
+        //availableHints = sharedPreferences.getInt("availableHints", availableHints);
         for (int i = 0; i < sharedPreferences.getInt("countOfItems", 0); i++)
             LevelsActivity.finishedLevels.add(sharedPreferences.getInt("level_" + i, 0));
     }
@@ -365,9 +365,10 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
             animateColorShape(shape, getResources().getColor(R.color.colorAccentBright), getResources().getColor(R.color.colorAccent));
             rescaleTile(x, y);
             if(!clicked) {
-//                checkHint(new Point(x, y));
-                hint++;
-                if (hintAnimation != null) hintAnimation.cancel();
+                if (hintAnimation != null) {
+                    hintAnimation.cancel();
+                    rescaleTile(x, y);
+                }
                 firstObject = new Point(x, y);
                 clicked = true;
                 animationRunning = false;
@@ -386,7 +387,7 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
                         midPoint = new Point((x + firstObject.x) / 2, (y + firstObject.y) / 2);
 
                     if(midPoint != null && currentLevel.getMap()[midPoint.x][midPoint.y] == 0) {
-                        checkHint(new Point(x, y));
+                        checkHint(firstObject, new Point(x, y));
                         rotateTriangles(firstObject, new Point(x, y));
                         collapseTriangles(firstObject, new Point(x, y), midPoint);
                     } else {
@@ -394,17 +395,21 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
                         animationRunning = false;
                         hint--;
                     }
-                } else if(typeSecond == 5 && (x == firstObject.x || y == firstObject.y || Math.abs(firstObject.x - x) == Math.abs(firstObject.y - y))) {
-                    checkHint(new Point(firstObject.x, firstObject.y));
-                    rotateTriangle(firstObject, new Point(x, y));
+                } else if(!(typeFirst == 5 && typeSecond == 5) && (typeFirst == 5 || typeSecond == 5) && (x == firstObject.x || y == firstObject.y || Math.abs(firstObject.x - x) == Math.abs(firstObject.y - y))) {
+                    checkHint(firstObject, new Point(x, y));
+                    rotateTriangle(typeSecond == 5 ? firstObject : new Point(x, y), typeSecond == 5 ? new Point(x, y) : firstObject);
+                    collapseBrightHole(typeSecond == 5 ? firstObject : new Point(x, y), typeSecond == 5 ? new Point(x, y) : firstObject);
+                } else if(typeFirst == 5 && typeSecond == 5 && firstObject.equals(new Point(x, y))) {
                     collapseBrightHole(firstObject, new Point(x, y));
                 } else if(!firstObject.equals(new Point(x, y))) {
                     showHint(R.string.hint);
                     animationRunning = false;
-                    hint--;
                 } else {
                     animationRunning = false;
-                    hint--;
+                }
+                if (hintAnimation != null) {
+                    hintAnimation.cancel();
+                    rescaleTile(x, y);
                 }
                 unMarkTile(firstObject.x, firstObject.y);
                 unMarkTile(x, y);
@@ -423,7 +428,7 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
     }
 
     private void setHintAvailable() {
-        ObjectAnimator alpha = ObjectAnimator.ofFloat(findViewById(R.id.imageHint), "alpha", findViewById(R.id.imageHint).getAlpha(), 1);
+        ObjectAnimator alpha = ObjectAnimator.ofFloat(findViewById(R.id.imageHint), "alpha", findViewById(R.id.imageHint).getAlpha(), hintAvailable ? 1 : 0.3f);
         alpha.setDuration(duration);
         alpha.start();
     }
@@ -444,7 +449,7 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
         }
     }
 
-    public void hideHints(View view) {
+    public void hideHint(View view) {
         ObjectAnimator sX_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintChoiceBox), "scaleX", 1, 0.6f);
         ObjectAnimator sY_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintChoiceBox), "scaleY", 1, 0.6f);
         ObjectAnimator a_1 = ObjectAnimator.ofFloat(findViewById(R.id.HintChoiceBox), "alpha", 1, 0);
@@ -467,8 +472,16 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
     public void useHint(View view) {
         if(hint < Hints.getHint(TutorialActivity.chosenLevel).size() && availableHints > 0) {
             availableHints--;
-            hideHints(null);
-            ImageView imageView = mapImageView[Hints.getHint(TutorialActivity.chosenLevel).get(hint).x][Hints.getHint(TutorialActivity.chosenLevel).get(hint).y];
+            hideHint(null);
+            ImageView imageView;
+            if(clicked && !Hints.getHint(TutorialActivity.chosenLevel).get(hint).equals(new Point(firstObject.x, firstObject.y)) &&
+                    !Hints.getHint(TutorialActivity.chosenLevel).get(hint + 1).equals(new Point(firstObject.x, firstObject.y)))
+                imageView = mapImageView[firstObject.x][firstObject.y];
+            else {
+                if(clicked && Hints.getHint(TutorialActivity.chosenLevel).get(hint).equals(new Point(firstObject.x, firstObject.y)))
+                    imageView = mapImageView[Hints.getHint(TutorialActivity.chosenLevel).get(hint + 1).x][Hints.getHint(TutorialActivity.chosenLevel).get(hint + 1).y];
+                else imageView = mapImageView[Hints.getHint(TutorialActivity.chosenLevel).get(hint).x][Hints.getHint(TutorialActivity.chosenLevel).get(hint).y];
+            }
             float previousScale = imageView.getScaleX();
             ObjectAnimator scaleX = ObjectAnimator.ofFloat(imageView, "scaleX", previousScale, 1, previousScale);
             scaleX.setRepeatCount(ValueAnimator.INFINITE);
@@ -491,15 +504,12 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
         else loadVideoRewardedAd();
     }
 
-    private void checkHint(Point point) {
+    private void checkHint(Point first, Point second) {
         try {
-            hintAvailable = Hints.getHint(TutorialActivity.chosenLevel).get(hint).equals(point) ||
-                    (Hints.getHint(TutorialActivity.chosenLevel).size() > hint + 1 && Hints.getHint(TutorialActivity.chosenLevel).get(hint + 1).equals(point)) ||
-                    (hint > 0 && Hints.getHint(TutorialActivity.chosenLevel).get(hint - 1).equals(point));
-            ObjectAnimator alpha = ObjectAnimator.ofFloat(findViewById(R.id.imageHint), "alpha", findViewById(R.id.imageHint).getAlpha(), hintAvailable ? 1f : 0.3f);
-            alpha.setDuration(duration);
-            alpha.start();
-            hint++;
+            hintAvailable = (Hints.getHint(TutorialActivity.chosenLevel).get(hint).equals(first) || Hints.getHint(TutorialActivity.chosenLevel).get(hint + 1).equals(first)) &&
+                    (Hints.getHint(TutorialActivity.chosenLevel).get(hint).equals(second) || Hints.getHint(TutorialActivity.chosenLevel).get(hint + 1).equals(second));
+            setHintAvailable();
+            hint += 2;
             if (hintAnimation != null) hintAnimation.cancel();
         } catch (Exception ignored) {}
     }
@@ -880,13 +890,13 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
 
     public ImageView getLastTriangle() {
         for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
-            if (currentLevel.getMap()[i][j] == 2 || currentLevel.getMap()[i][j] == 3 || currentLevel.getMap()[i][j] == 4) return mapImageView[i][j];
+            if (currentLevel.getMap()[i][j] == 2) return mapImageView[i][j];
         return null;
     }
 
     public Point getLastTrianglePos() {
         for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
-            if (currentLevel.getMap()[i][j] == 2 || currentLevel.getMap()[i][j] == 3 || currentLevel.getMap()[i][j] == 4) return new Point(i, j);
+            if (currentLevel.getMap()[i][j] == 2) return new Point(i, j);
         return null;
     }
 
@@ -903,12 +913,12 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
     }
 
     public boolean lastTriangle() {
-        for(int i = 0, count = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++) {
-            if (currentLevel.getMap()[i][j] == 2 || currentLevel.getMap()[i][j] == 3 ||
-                    currentLevel.getMap()[i][j] == 4 || currentLevel.getMap()[i][j] == 5) count++;
-            if (count > 1) return false;
+        int count = 0;
+        for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++) {
+            if (currentLevel.getMap()[i][j] == 2) count++;
+            if (count > 1 || currentLevel.getMap()[i][j] == 3 || currentLevel.getMap()[i][j] == 4 || currentLevel.getMap()[i][j] == 5) return false;
         }
-        return true;
+        return count == 1;
     }
 
     private float getAngle(int x, int y, ImageView pivot) {
@@ -1124,7 +1134,7 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
         saveFinishedLevels();
         if(findViewById(R.id.HintBox).getVisibility() == View.VISIBLE) super.onBackPressed();
         else if(findViewById(R.id.HintChoiceBox).getVisibility() == View.VISIBLE)
-            hideHints(null);
+            hideHint(null);
         else showHint(R.string.sure);
     }
 

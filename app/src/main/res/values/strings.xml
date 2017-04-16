@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">OneWay</string>
-    <string name="fullscreen_ad_hints">ca-app-pub-3743875596921560/5847181732</string>
+    <string name="fullscreen_ad_hints" translatable="false">ca-app-pub-3743875596921560/5847181732</string>
     <string name="level">Level</string>
     <string name="moves">Moves</string>
     <string name="hint">It\'s illegal move</string>
@@ -14,8 +14,9 @@
     <string name="hint_3">Just for fun you can\'t</string>
     <string name="hint_4">Check what\'s going to happen!</string>
     <string name="hint_5">Maybe this time something different…</string>
-    <string name="hint_6">That\'s last tip</string>
-    <string name="hint_7">Remember! Only opposite triangles can be connected</string>
+    <string name="hint_6">Don\'t be afraid of possibilities</string>
+    <string name="hint_7">That\'s last tip</string>
+    <string name="hint_8">Remember! Only opposite triangles can be connected</string>
     <string name="you_have">You have</string>
     <string name="do_you_want">Do you want to use one?</string>
     <string name="yes">Yes, of course!</string>

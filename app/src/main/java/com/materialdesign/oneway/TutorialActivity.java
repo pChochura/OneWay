@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnticipateOvershootInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -59,8 +60,9 @@ public class TutorialActivity extends Activity {
     private void animateIn() {
         ObjectAnimator a_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageLogo), "alpha", 0, 1);
         ObjectAnimator a_2 = ObjectAnimator.ofFloat(findViewById(R.id.Board), "alpha", 0, 1);
+        ObjectAnimator a_3 = ObjectAnimator.ofFloat(findViewById(R.id.imageRestart), "alpha", 0, 1);
         AnimatorSet set = new AnimatorSet();
-        set.playSequentially(a_1, a_2);
+        set.playSequentially(a_1, a_2, a_3);
         set.setDuration(duration);
         set.start();
     }
@@ -78,7 +80,7 @@ public class TutorialActivity extends Activity {
     }
 
     public void setupBackgroundAnimation() {
-        ObjectAnimator translationY_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageBackground), "translationY", findViewById(R.id.imageBackground).getTranslationY(), new Random().nextInt(200) - 100);
+        ObjectAnimator translationY_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageBackground), "translationY", findViewById(R.id.imageBackground).getTranslationY(), new Random().nextInt(100) - 50);
         ObjectAnimator translationX_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageBackground), "translationX", findViewById(R.id.imageBackground).getTranslationX(), new Random().nextInt(80) - 40);
         AnimatorSet set = new AnimatorSet();
         set.playTogether(translationX_1, translationY_1);
@@ -131,6 +133,69 @@ public class TutorialActivity extends Activity {
             parent.removeView(child);
             parent.addView(child, 0);
         }
+    }
+
+    public void clickRestart(View view) {
+        if(!animationRunning) {
+            animationRunning = true;
+            if(clicked) {
+                GradientDrawable shape = (GradientDrawable) ((LayerDrawable) tilesImageView[firstObject.x][firstObject.y].getBackground()).findDrawableByLayerId(R.id.card);
+                animateColorShape(shape, getResources().getColor(R.color.colorAccent), getResources().getColor(R.color.colorAccentBright));
+                clicked = false;
+            }
+            ObjectAnimator rotation = ObjectAnimator.ofFloat(findViewById(R.id.imageRestart), "rotation", 0, 360);
+            rotation.setDuration(duration);
+            rotation.setInterpolator(new AccelerateDecelerateInterpolator());
+            rotation.start();
+            collapseAllTriangles(new Runnable() {
+                @Override
+                public void run() {
+                    getLevel();
+                    setBoard();
+                    showBoard();
+                    animationRunning = false;
+                }
+            });
+        }
+    }
+
+    private void collapseAllTriangles(final Runnable runnable) {
+        final int triangles = getCountOf(2) + getCountOf(3) + getCountOf(4) + getCountOf(5);
+        for(int i = 0, count = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
+            if(currentLevel.getMap()[i][j] == 2 || currentLevel.getMap()[i][j] == 3 || currentLevel.getMap()[i][j] == 4) {
+                count++;
+                collapseTriangle(mapImageView[i][j], triangles != count ? null : new Runnable() {
+                    @Override
+                    public void run() {
+                        if(runnable != null) runnable.run();
+                    }
+                });
+            } else if(currentLevel.getMap()[i][j] == 5) {
+                count++;
+                ObjectAnimator scaleX = ObjectAnimator.ofFloat(mapImageView[i][j], "scaleX", 0.6f, 0);
+                ObjectAnimator scaleY = ObjectAnimator.ofFloat(mapImageView[i][j], "scaleY", 0.6f, 0);
+                AnimatorSet set = new AnimatorSet();
+                set.playTogether(scaleX, scaleY);
+                set.setDuration(duration);
+                set.start();
+                set.setInterpolator(new AnticipateOvershootInterpolator());
+                final int finalCount = count;
+                set.addListener(new Animator.AnimatorListener() {
+                    @Override public void onAnimationStart(Animator animator) {}
+                    @Override public void onAnimationEnd(Animator animator) {
+                        if(triangles == finalCount && runnable != null) runnable.run();
+                    }
+                    @Override public void onAnimationCancel(Animator animator) {}
+                    @Override public void onAnimationRepeat(Animator animator) {}
+                });
+            }
+    }
+
+    private int getCountOf(int value) {
+        int count = 0;
+        for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
+            if(currentLevel.getMap()[i][j] == value) count++;
+        return count;
     }
 
     public void getLevel() {
@@ -246,8 +311,10 @@ public class TutorialActivity extends Activity {
                         rotateTriangles(firstObject, new Point(x, y));
                         collapseTriangles(firstObject, new Point(x, y), midPoint);
                     } else animationRunning = false;
-                } else if(typeSecond == 5 && (x == firstObject.x || y == firstObject.y || Math.abs(firstObject.x - x) == Math.abs(firstObject.y - y))) {
-                    rotateTriangle(firstObject, new Point(x, y));
+                } else if(!(typeFirst == 5 && typeSecond == 5) && (typeFirst == 5 || typeSecond == 5) && (x == firstObject.x || y == firstObject.y || Math.abs(firstObject.x - x) == Math.abs(firstObject.y - y))) {
+                    rotateTriangle(typeSecond == 5 ? firstObject : new Point(x, y), typeSecond == 5 ? new Point(x, y) : firstObject);
+                    collapseBrightHole(typeSecond == 5 ? firstObject : new Point(x, y), typeSecond == 5 ? new Point(x, y) : firstObject);
+                } else if(typeFirst == 5 && typeSecond == 5) {
                     collapseBrightHole(firstObject, new Point(x, y));
                 } else if(!firstObject.equals(new Point(x, y)))
                     animationRunning = false;
@@ -378,13 +445,13 @@ public class TutorialActivity extends Activity {
                                 @Override public void onAnimationStart(Animator animator) {}
                                 @Override public void onAnimationEnd(Animator animator) {
                                     chosenLevel--;
-                                    if(chosenLevel != -7) {
+                                    if(chosenLevel != -8) {
                                         getLevel();
                                         setBoard();
                                         showBoard();
                                         animationRunning = false;
                                     } else {
-                                        showHint(R.string.hint_7);
+                                        showHint(R.string.hint_8);
                                         new CountDownTimer(5000, 5000) {
                                             @Override public void onTick(long l) {}
                                             @Override public void onFinish() {
@@ -414,13 +481,13 @@ public class TutorialActivity extends Activity {
                 @Override public void onAnimationStart(Animator animator) {}
                 @Override public void onAnimationEnd(Animator animator) {
                     chosenLevel--;
-                    if(chosenLevel != -7) {
+                    if(chosenLevel != -8) {
                         getLevel();
                         setBoard();
                         showBoard();
                         animationRunning = false;
                     } else {
-                        showHint(R.string.hint_7);
+                        showHint(R.string.hint_8);
                         new CountDownTimer(5000, 5000) {
                             @Override public void onTick(long l) {}
                             @Override public void onFinish() {
@@ -576,13 +643,13 @@ public class TutorialActivity extends Activity {
 
     public ImageView getLastTriangle() {
         for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
-            if (currentLevel.getMap()[i][j] == 2 || currentLevel.getMap()[i][j] == 3 || currentLevel.getMap()[i][j] == 4) return mapImageView[i][j];
+            if (currentLevel.getMap()[i][j] == 2) return mapImageView[i][j];
         return null;
     }
 
     public Point getLastTrianglePos() {
         for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
-            if (currentLevel.getMap()[i][j] == 2 || currentLevel.getMap()[i][j] == 3 || currentLevel.getMap()[i][j] == 4) return new Point(i, j);
+            if (currentLevel.getMap()[i][j] == 2) return new Point(i, j);
         return null;
     }
 
@@ -599,11 +666,12 @@ public class TutorialActivity extends Activity {
     }
 
     public boolean lastTriangle() {
-        for(int i = 0, count = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++) {
-            if (currentLevel.getMap()[i][j] == 2 || currentLevel.getMap()[i][j] == 3) count++;
-            if (count > 1) return false;
+        int count = 0;
+        for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++) {
+            if (currentLevel.getMap()[i][j] == 2) count++;
+            if (count > 1 || currentLevel.getMap()[i][j] == 3 || currentLevel.getMap()[i][j] == 4 || currentLevel.getMap()[i][j] == 5) return false;
         }
-        return true;
+        return count == 1;
     }
 
     private float getAngle(int x, int y, ImageView pivot) {
@@ -613,11 +681,7 @@ public class TutorialActivity extends Activity {
         if(dy != 0) angle = -(float) (Math.atan(dx / dy) * 180 / Math.PI);
         if(mapImageView[x][y].getY() < pivot.getY() || (mapImageView[x][y].getY() == pivot.getY() && mapImageView[x][y].getX() < pivot.getX()))
             angle -= 180;
-        if(angle > 180)
-            angle = 360 - angle;
-        else if(angle < -180)
-            angle = angle + 360;
-        return angle;
+        return Math.abs(angle) < Math.abs(180 - angle) ? angle : 180 - angle;
     }
 
     private void startGame() {
@@ -625,10 +689,11 @@ public class TutorialActivity extends Activity {
         ObjectAnimator a_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageBackground), "alpha", findViewById(R.id.imageBackground).getAlpha(), 0.1f);
         ObjectAnimator a_2 = ObjectAnimator.ofFloat(findViewById(R.id.imageLogo), "alpha", findViewById(R.id.imageLogo).getAlpha(), 0);
         ObjectAnimator a_3 = ObjectAnimator.ofFloat(findViewById(R.id.textHint), "alpha", findViewById(R.id.textHint).getAlpha(), 0);
+        ObjectAnimator a_4 = ObjectAnimator.ofFloat(findViewById(R.id.imageRestart), "alpha", findViewById(R.id.imageRestart).getAlpha(), 0);
         ObjectAnimator tY_1 = ObjectAnimator.ofFloat(findViewById(R.id.imageLogo), "translationY", findViewById(R.id.imageLogo).getTranslationY(), -50);
         ObjectAnimator tX_1 = ObjectAnimator.ofFloat(findViewById(R.id.Board), "translationX", findViewById(R.id.Board).getTranslationY(), size.x);
         AnimatorSet set = new AnimatorSet();
-        set.playTogether(a_1, a_2, a_3, tY_1, tX_1);
+        set.playTogether(a_1, a_2, a_3, a_4, tY_1, tX_1);
         set.setDuration(duration);
         set.setInterpolator(new AnticipateOvershootInterpolator());
         set.start();

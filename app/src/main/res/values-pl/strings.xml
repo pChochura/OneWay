@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OneWay</string>
+    <string name="do_you_want">Chciałbyś użyć?</string>
+    <string name="hint">Niemożliwe połączenie</string>
+    <string name="hint_0">Po prostu kliknij na oba trójkąty</string>
+    <string name="hint_1">Tylko, jeśli jest wolne miejsce!</string>
+    <string name="hint_2">Czasem coś znika...</string>
+    <string name="hint_3">Dla zabawy, nie możesz</string>
+    <string name="hint_4">Sprawdź co się stanie!</string>
+    <string name="hint_5">Może tym razem coś innego...</string>
+    <string name="hint_6">Nie bój się możliwości</string>
+    <string name="hint_7">To już ostatnia podpowiedź</string>
+    <string name="hint_8">Pamiętaj! Tylko trójkąty przeciwnych kolorów mogą być połączone</string>
+    <string name="hints">podpowiedzi.</string>
+    <string name="level">Poziom</string>
+    <string name="moves">Ruchy</string>
+    <string name="no">Daj mi czas</string>
+    <string name="not_ready">Nie jesteś na to gotowy!</string>
+    <string name="sure">Czy na pewno?</string>
+    <string name="too_much_moves">Brakło Ci ruchów...</string>
+    <string name="watch_ad">Obejrzyj reklamę (+2)</string>
+    <string name="wrong_direction">Zły kierunek, żeby mogło się zapaść.</string>
+    <string name="yes">Oczywiście!</string>
+    <string name="you_have">Posiadasz</string>
+</resources>
