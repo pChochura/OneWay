@@ -81,6 +81,11 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
         ((TextView) findViewById(R.id.textMoves)).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Arcon.ttf"));
         ((TextView) findViewById(R.id.textLevel)).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Arcon.ttf"));
         ((TextView) findViewById(R.id.textHint)).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Arcon.ttf"));
+        ((TextView) findViewById(R.id.textAvailableHints)).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Arcon.ttf"));
+        ((TextView) findViewById(R.id.textView)).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Arcon.ttf"));
+        ((TextView) findViewById(R.id.textView2)).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Arcon.ttf"));
+        ((TextView) findViewById(R.id.textYes)).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Arcon.ttf"));
+        ((TextView) findViewById(R.id.textNo)).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Arcon.ttf"));
 
         if(isOnline()) loadVideoRewardedAd();
         getFinishedLevels();
@@ -95,7 +100,7 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
 
     private void getFinishedLevels() {
         LevelsActivity.finishedLevels.clear();
-        //availableHints = sharedPreferences.getInt("availableHints", availableHints);
+        availableHints = sharedPreferences.getInt("availableHints", availableHints);
         for (int i = 0; i < sharedPreferences.getInt("countOfItems", 0); i++)
             LevelsActivity.finishedLevels.add(sharedPreferences.getInt("level_" + i, 0));
     }
@@ -404,11 +409,10 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
                 } else if(!firstObject.equals(new Point(x, y))) {
                     showHint(R.string.hint);
                     animationRunning = false;
-                } else {
-                    animationRunning = false;
-                }
+                } else animationRunning = false;
                 if (hintAnimation != null) {
                     hintAnimation.cancel();
+                    rescaleTile(firstObject.x, firstObject.y);
                     rescaleTile(x, y);
                 }
                 unMarkTile(firstObject.x, firstObject.y);
@@ -470,29 +474,64 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
     }
 
     public void useHint(View view) {
-        if(hint < Hints.getHint(TutorialActivity.chosenLevel).size() && availableHints > 0) {
-            availableHints--;
+        if(hint >= 0 && hint < Hints.getHint(TutorialActivity.chosenLevel).size() - 1 && availableHints > 0) {
             hideHint(null);
-            ImageView imageView;
+            ImageView imageView = null;
+            if(hint == Hints.getHint(TutorialActivity.chosenLevel).size() - 1)
+                hint = 0;
             if(clicked && !Hints.getHint(TutorialActivity.chosenLevel).get(hint).equals(new Point(firstObject.x, firstObject.y)) &&
-                    !Hints.getHint(TutorialActivity.chosenLevel).get(hint + 1).equals(new Point(firstObject.x, firstObject.y)))
-                imageView = mapImageView[firstObject.x][firstObject.y];
-            else {
-                if(clicked && Hints.getHint(TutorialActivity.chosenLevel).get(hint).equals(new Point(firstObject.x, firstObject.y)))
-                    imageView = mapImageView[Hints.getHint(TutorialActivity.chosenLevel).get(hint + 1).x][Hints.getHint(TutorialActivity.chosenLevel).get(hint + 1).y];
-                else imageView = mapImageView[Hints.getHint(TutorialActivity.chosenLevel).get(hint).x][Hints.getHint(TutorialActivity.chosenLevel).get(hint).y];
+                    !Hints.getHint(TutorialActivity.chosenLevel).get(hint + 1).equals(new Point(firstObject.x, firstObject.y))) {
+                for(int i = 0; i < Hints.getHint(TutorialActivity.chosenLevel).size() - 1; i++)
+                    if(Hints.getHint(TutorialActivity.chosenLevel).get(i).equals(firstObject)) {
+                        if(i % 2 == 0 && currentLevel.getMap()[Hints.getHint(TutorialActivity.chosenLevel).get(i + 1).x][Hints.getHint(TutorialActivity.chosenLevel).get(i + 1).y] != 0) {
+                            imageView = mapImageView[Hints.getHint(TutorialActivity.chosenLevel).get(i + 1).x][Hints.getHint(TutorialActivity.chosenLevel).get(i + 1).y];
+                            Hints.getHint(TutorialActivity.chosenLevel).remove(i);
+                            Hints.getHint(TutorialActivity.chosenLevel).remove(i + 1);
+                            hint -= 2;
+                            break;
+                        } else if(i % 2 == 1 && currentLevel.getMap()[Hints.getHint(TutorialActivity.chosenLevel).get(i - 1).x][Hints.getHint(TutorialActivity.chosenLevel).get(i - 1).y] != 0) {
+                            imageView = mapImageView[Hints.getHint(TutorialActivity.chosenLevel).get(i - 1).x][Hints.getHint(TutorialActivity.chosenLevel).get(i - 1).y];
+                            Hints.getHint(TutorialActivity.chosenLevel).remove(i);
+                            Hints.getHint(TutorialActivity.chosenLevel).remove(i - 1);
+                            hint -= 2;
+                            break;
+                        }
+                    }
+            } else {
+                for(int i = hint; i <= Hints.getHint(TutorialActivity.chosenLevel).size() - 2; i += 2) {
+                    if(currentLevel.getMap()[Hints.getHint(TutorialActivity.chosenLevel).get(i).x][Hints.getHint(TutorialActivity.chosenLevel).get(i).y] != 0 &&
+                            currentLevel.getMap()[Hints.getHint(TutorialActivity.chosenLevel).get(i + 1).x][Hints.getHint(TutorialActivity.chosenLevel).get(i + 1).y] != 0) {
+                        if(clicked && Hints.getHint(TutorialActivity.chosenLevel).get(i).equals(new Point(firstObject.x, firstObject.y))) {
+                            imageView = mapImageView[Hints.getHint(TutorialActivity.chosenLevel).get(i + 1).x][Hints.getHint(TutorialActivity.chosenLevel).get(i + 1).y];
+                            break;
+                        } else if(!clicked || Hints.getHint(TutorialActivity.chosenLevel).get(i + 1).equals(new Point(firstObject.x, firstObject.y))) {
+                            imageView = mapImageView[Hints.getHint(TutorialActivity.chosenLevel).get(i).x][Hints.getHint(TutorialActivity.chosenLevel).get(i).y];
+                            break;
+                        }
+                    }
+                }
             }
-            float previousScale = imageView.getScaleX();
-            ObjectAnimator scaleX = ObjectAnimator.ofFloat(imageView, "scaleX", previousScale, 1, previousScale);
-            scaleX.setRepeatCount(ValueAnimator.INFINITE);
-            scaleX.setRepeatMode(ValueAnimator.REVERSE);
-            ObjectAnimator scaleY = ObjectAnimator.ofFloat(imageView, "scaleY", previousScale, 1, previousScale);
-            scaleY.setRepeatCount(ValueAnimator.INFINITE);
-            scaleY.setRepeatMode(ValueAnimator.REVERSE);
-            hintAnimation = new AnimatorSet();
-            hintAnimation.playTogether(scaleX, scaleY);
-            hintAnimation.setDuration(duration * 2);
-            hintAnimation.start();
+            if(imageView == null && firstObject != null) {
+                imageView = mapImageView[firstObject.x][firstObject.y];
+                availableHints++;
+            }
+            if(imageView != null) {
+                availableHints--;
+                float previousScale = imageView.getScaleX();
+                ObjectAnimator scaleX = ObjectAnimator.ofFloat(imageView, "scaleX", previousScale, 1, previousScale);
+                scaleX.setRepeatCount(ValueAnimator.INFINITE);
+                scaleX.setRepeatMode(ValueAnimator.REVERSE);
+                ObjectAnimator scaleY = ObjectAnimator.ofFloat(imageView, "scaleY", previousScale, 1, previousScale);
+                scaleY.setRepeatCount(ValueAnimator.INFINITE);
+                scaleY.setRepeatMode(ValueAnimator.REVERSE);
+                hintAnimation = new AnimatorSet();
+                hintAnimation.playTogether(scaleX, scaleY);
+                hintAnimation.setDuration(duration * 2);
+                hintAnimation.start();
+            }
+        } else {
+            hintAvailable = false;
+            setHintAvailable();
         }
     }
 
@@ -506,8 +545,18 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
 
     private void checkHint(Point first, Point second) {
         try {
-            hintAvailable = (Hints.getHint(TutorialActivity.chosenLevel).get(hint).equals(first) || Hints.getHint(TutorialActivity.chosenLevel).get(hint + 1).equals(first)) &&
-                    (Hints.getHint(TutorialActivity.chosenLevel).get(hint).equals(second) || Hints.getHint(TutorialActivity.chosenLevel).get(hint + 1).equals(second));
+            boolean hintAvailabilityTemp = false;
+            if(hintAvailable)
+                for(int i = 0; i < Hints.getHint(TutorialActivity.chosenLevel).size(); i += 2) {
+                    if(((i < Hints.getHint(TutorialActivity.chosenLevel).size() && Hints.getHint(TutorialActivity.chosenLevel).get(i).equals(first)) ||
+                            (i + 1 < Hints.getHint(TutorialActivity.chosenLevel).size() && Hints.getHint(TutorialActivity.chosenLevel).get(i + 1).equals(first))) &&
+                                    ((i < Hints.getHint(TutorialActivity.chosenLevel).size() && Hints.getHint(TutorialActivity.chosenLevel).get(i).equals(second)) ||
+                        (i + 1 < Hints.getHint(TutorialActivity.chosenLevel).size() && Hints.getHint(TutorialActivity.chosenLevel).get(i + 1).equals(second)))) {
+                        hintAvailabilityTemp = true;
+                        break;
+                    }
+                }
+            hintAvailable = hintAvailabilityTemp;
             setHintAvailable();
             hint += 2;
             if (hintAnimation != null) hintAnimation.cancel();
@@ -1129,6 +1178,16 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
         hint = sharedPreferences.getInt("hint", hint);
     }
 
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+    private void loadVideoRewardedAd() {
+        mAd.loadAd(getResources().getString(R.string.fullscreen_ad_hints), new AdRequest.Builder().build());
+    }
+
     @Override
     public void onBackPressed() {
         saveFinishedLevels();
@@ -1162,16 +1221,6 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
         saveFinishedLevels();
         mAd.destroy(this);
         super.onDestroy();
-    }
-
-    public boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
-
-    private void loadVideoRewardedAd() {
-        mAd.loadAd(getResources().getString(R.string.fullscreen_ad_hints), new AdRequest.Builder().build());
     }
 
     @Override
