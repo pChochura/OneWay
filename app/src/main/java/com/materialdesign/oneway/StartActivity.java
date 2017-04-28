@@ -52,7 +52,7 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
     boolean animationRunning = false, clicked = false, hintAvailable = true, addingMode = false;
     static boolean developer = false, adWatched = false;
     static int developerClicks = 5;
-    int tileSize = 50, moves = 0, hint = 0, availableHints = 10;
+    static int tileSize = 50, moves = 0, hint = 0, availableHints = 10;
     ImageView[][] mapImageView = new ImageView[WIDTH][HEIGHT];
     ImageView[][] tilesImageView = new ImageView[WIDTH][HEIGHT];
     TextView[][] texts = new TextView[WIDTH][HEIGHT];
@@ -87,7 +87,7 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
         ((TextView) findViewById(R.id.textYes)).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Arcon.ttf"));
         ((TextView) findViewById(R.id.textNo)).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Arcon.ttf"));
 
-        if(isOnline()) loadVideoRewardedAd();
+//        if(isOnline()) loadVideoRewardedAd();
         getFinishedLevels();
         getBoard();
         setSizeOfTiles();
@@ -536,11 +536,12 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
     }
 
     public void watchAd(View view) {
-        if (mAd.isLoaded()) {
+        /*if (mAd.isLoaded()) {
             if(clicked) unMarkTile(firstObject.x, firstObject.y);
             mAd.show();
         }
-        else loadVideoRewardedAd();
+        else loadVideoRewardedAd();*/
+        loadTheMazeAd();
     }
 
     private void checkHint(Point first, Point second) {
@@ -1182,6 +1183,11 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+    private void loadTheMazeAd() {
+        startActivity(new Intent(getApplicationContext(), AdActivity.class));
+        hideHint(null);
     }
 
     private void loadVideoRewardedAd() {
