@@ -6,7 +6,6 @@ import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -15,8 +14,6 @@ import android.graphics.Point;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -33,20 +30,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.reward.RewardItem;
-import com.google.android.gms.ads.reward.RewardedVideoAd;
-import com.google.android.gms.ads.reward.RewardedVideoAdListener;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
-public class StartActivity extends Activity implements RewardedVideoAdListener {
-    private static final String APP_ID = "ca-app-pub-3743875596921560~1057055337";
+public class StartActivity extends Activity{
     static int WIDTH = 7, HEIGHT = 7, duration = 1000, maxObjects = 5;
     static float backgroundTranslationX = 0, backgroundTranslationY = 0;
     boolean animationRunning = false, clicked = false, hintAvailable = true, addingMode = false;
@@ -61,7 +51,6 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
     public static Point firstObject, size;
     AnimatorSet hintAnimation;
     public SharedPreferences sharedPreferences;
-    private RewardedVideoAd mAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,9 +58,6 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_start);
 
-        MobileAds.initialize(this, APP_ID);
-        mAd = MobileAds.getRewardedVideoAdInstance(this);
-        mAd.setRewardedVideoAdListener(this);
         sharedPreferences = getSharedPreferences("Levels", MODE_PRIVATE);
         size = new Point();
         getWindowManager().getDefaultDisplay().getSize(size);
@@ -87,7 +73,6 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
         ((TextView) findViewById(R.id.textYes)).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Arcon.ttf"));
         ((TextView) findViewById(R.id.textNo)).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Arcon.ttf"));
 
-//        if(isOnline()) loadVideoRewardedAd();
         getFinishedLevels();
         getBoard();
         setSizeOfTiles();
@@ -536,11 +521,6 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
     }
 
     public void watchAd(View view) {
-        /*if (mAd.isLoaded()) {
-            if(clicked) unMarkTile(firstObject.x, firstObject.y);
-            mAd.show();
-        }
-        else loadVideoRewardedAd();*/
         loadTheMazeAd();
     }
 
@@ -1164,13 +1144,6 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
         });
     }
 
-    private void saveMap() {
-        for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
-            sharedPreferences.edit().putInt("map" + i + j, currentLevel.getMap()[i][j]).apply();
-        sharedPreferences.edit().putInt("moves", moves).apply();
-        sharedPreferences.edit().putInt("hint", clicked ? hint - 1 : hint).apply();
-    }
-
     private void loadMap() {
         for(int i = 0; i < WIDTH; i++) for(int j = 0; j < HEIGHT; j++)
             currentLevel.getMap()[i][j] = sharedPreferences.getInt("map" + i + j, 0);
@@ -1179,19 +1152,9 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
         hint = sharedPreferences.getInt("hint", hint);
     }
 
-    public boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
-
     private void loadTheMazeAd() {
         startActivity(new Intent(getApplicationContext(), AdActivity.class));
         hideHint(null);
-    }
-
-    private void loadVideoRewardedAd() {
-        mAd.loadAd(getResources().getString(R.string.fullscreen_ad_hints), new AdRequest.Builder().build());
     }
 
     @Override
@@ -1206,7 +1169,6 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
     @Override
     public void onPause() {
         saveFinishedLevels();
-        mAd.pause(this);
         super.onPause();
     }
 
@@ -1218,48 +1180,12 @@ public class StartActivity extends Activity implements RewardedVideoAdListener {
 
     @Override
     public void onResume() {
-        mAd.resume(this);
         super.onResume();
     }
 
     @Override
     public void onDestroy() {
         saveFinishedLevels();
-        mAd.destroy(this);
         super.onDestroy();
-    }
-
-    @Override
-    public void onRewardedVideoAdLoaded() {}
-
-    @Override
-    public void onRewardedVideoAdOpened() {
-        saveMap();
-    }
-
-    @Override
-    public void onRewardedVideoStarted() {
-    }
-
-    @Override
-    public void onRewardedVideoAdClosed() {
-        loadVideoRewardedAd();
-//        loadMap();
-        adWatched = true;
-    }
-
-    @Override
-    public void onRewarded(RewardItem rewardItem) {
-        availableHints += rewardItem.getAmount();
-    }
-
-    @Override
-    public void onRewardedVideoAdLeftApplication() {
-    }
-
-    @Override
-    public void onRewardedVideoAdFailedToLoad(int i) {
-        Toast.makeText(this, "Ad cannot be loaded", Toast.LENGTH_SHORT).show();
-        if(isOnline()) loadVideoRewardedAd();
     }
 }

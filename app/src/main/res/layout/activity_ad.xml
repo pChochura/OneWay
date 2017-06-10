@@ -7,13 +7,13 @@
         android:id="@+id/imageBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clickable="true"
-        android:onClick="clickOpenTheMaze"
-        android:scaleType="centerCrop"
-        android:src="@mipmap/the_maze_ad"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:clickable="true"
+        android:onClick="clickOpenApp"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ad_the_maze_1"/>
 
     <ImageView
         android:id="@+id/imageView"
@@ -35,7 +35,9 @@
         android:layout_alignRight="@+id/imageView"
         android:layout_alignStart="@+id/imageView"
         android:layout_alignTop="@+id/imageView"
+        android:clickable="true"
         android:gravity="center"
+        android:onClick="clickClose"
         android:text="10"
         android:textColor="#ffffff"
         android:textStyle="bold"/>
